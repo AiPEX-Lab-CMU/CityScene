@@ -47,8 +47,8 @@ public class WaypointMovement : MonoBehaviour
 
         } else
         {
-
-            lineDraw.enabled = false;
+            if(lineDraw)
+                lineDraw.enabled = false;
 
         }
 
