@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class TrafficLightManager : MonoBehaviour
@@ -7,6 +8,12 @@ public class TrafficLightManager : MonoBehaviour
 
     public bool canPeopleWalk;
     public bool canCarsGo;
+    public bool usePresetValue;
+    public bool generateRandomValue;
+    public float carsPassDuration;
+    public float peopleWalkDuration;
+
+    Renderer color;
 
     [SerializeField] float peopleWalkTimer;
     [SerializeField] float carsRunningTimer;
@@ -16,12 +23,28 @@ public class TrafficLightManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        color = this.GetComponent<Renderer>();
+        color.material.SetColor("_Color", Color.green);
+        peopleWalkTimer = 0.0f;
+        carsRunningTimer = 0.0f;
+        Debug.Log("Start");
         trafficLightInfo = GameObject.FindObjectOfType<TrafficLightInfo>();
-
         canCarsGo = true;
         canPeopleWalk = false;
-
+        if(usePresetValue)
+        {
+            carsPassDuration = trafficLightInfo.carsPassDuration;
+            peopleWalkDuration = trafficLightInfo.peopleWalkDuration;
+        }
+        else
+        {
+            System.Random rnd = new System.Random();
+            if(generateRandomValue)
+            {
+                carsPassDuration = rnd.Next(5, 15);
+                peopleWalkDuration = rnd.Next(5, 15);
+            }
+        }
     }
 
     //Truth table
@@ -33,25 +56,28 @@ public class TrafficLightManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         if (canCarsGo)
             carsRunningTimer += Time.deltaTime;
 
         if (canPeopleWalk)
             peopleWalkTimer += Time.deltaTime;
 
-        if(carsRunningTimer > trafficLightInfo.carsPassDuration)
+        if(carsRunningTimer > carsPassDuration)
         {
             canCarsGo = false;
             canPeopleWalk = true;
+            peopleWalkTimer = 0.0f;
             carsRunningTimer = 0.0f;
+            color.material.SetColor("_Color", Color.red);
         }
 
-        if(peopleWalkTimer > trafficLightInfo.peopleWalkDuration)
+        if(peopleWalkTimer > peopleWalkDuration)
         {
             canPeopleWalk = false;
             canCarsGo = true;
+            carsRunningTimer = 0.0f;
             peopleWalkTimer = 0.0f;
+            color.material.SetColor("_Color", Color.green);
         }
 
     }
