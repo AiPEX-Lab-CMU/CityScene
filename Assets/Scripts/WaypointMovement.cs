@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WaypointMovement : MonoBehaviour
 {
-    public enum TypeOfObject { Car, Person};
+    public enum TypeOfObject { Car, Person };
 
     public TypeOfObject thisType;
 
@@ -13,12 +13,17 @@ public class WaypointMovement : MonoBehaviour
     [SerializeField]
     Transform currentTarget;
 
+    [SerializeField] float beginDelay = 0.0f;
+
     public float movespeed;
 
     //Keeping a track of the current waypoint the target needs to go towards.
     int waypointCounter = 0;
 
-    public bool shouldMove = true;
+    //controls movement after movement has been activated
+    public bool shouldMove;
+    //controls activation of movement
+    bool shouldStartMove = false;
 
     [SerializeField] Animator animator;
     [SerializeField] bool debugPathDraw;
@@ -31,35 +36,35 @@ public class WaypointMovement : MonoBehaviour
 
         currentTarget = wayPoints[waypointCounter];
 
+        //Movement only starts after the begin delay
+
+        shouldStartMove = false;
+        Invoke("StartMoving", beginDelay);
+
         lineDraw = this.gameObject.GetComponent<LineRenderer>();
 
-        if (debugPathDraw)
+        if (lineDraw)
         {
             lineDraw.positionCount = wayPoints.Count;
 
-            for(int i =0; i< wayPoints.Count; i++)
+            for (int i = 0; i < wayPoints.Count; i++)
             {
 
                 lineDraw.SetPosition(i, wayPoints[i].position);
 
             }
 
-
-        } else
-        {
-            if(lineDraw)
-                lineDraw.enabled = false;
-
+            lineDraw.enabled = debugPathDraw;
         }
-
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-        if(thisType == TypeOfObject.Person)
+
+        if (thisType == TypeOfObject.Person)
         {
+            lineDraw.enabled = debugPathDraw;
 
             if (shouldMove)
             {
@@ -69,7 +74,7 @@ public class WaypointMovement : MonoBehaviour
             } else
             {
 
-               // animator.SetBool("shouldMove", false);
+                // animator.SetBool("shouldMove", false);
 
             }
 
@@ -78,14 +83,14 @@ public class WaypointMovement : MonoBehaviour
         if (Vector3.Distance(this.transform.position, currentTarget.position) < 0.1f)
         {
 
-                //The waypoint needs to change once the target reaches the current waypoint it was going towards
-                waypointCounter++;
+            //The waypoint needs to change once the target reaches the current waypoint it was going towards
+            waypointCounter++;
 
-                if (waypointCounter > wayPoints.Count - 1)
-                    waypointCounter = 0;
+            if (waypointCounter > wayPoints.Count - 1)
+                waypointCounter = 0;
 
-                currentTarget = wayPoints[waypointCounter];
-            
+            currentTarget = wayPoints[waypointCounter];
+
         } else
         {
 
@@ -94,12 +99,13 @@ public class WaypointMovement : MonoBehaviour
         }
 
 
+
     }
 
     void MoveMe()
     {
 
-        if (!shouldMove)
+        if (!shouldMove || !shouldStartMove)
             return;
 
         this.transform.LookAt(currentTarget);
@@ -122,6 +128,13 @@ public class WaypointMovement : MonoBehaviour
 
         }
 
+
+    }
+
+    void StartMoving()
+    {
+
+        shouldStartMove = true;
 
     }
 
