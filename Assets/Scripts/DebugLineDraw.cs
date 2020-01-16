@@ -9,7 +9,7 @@ public class DebugLineDraw : MonoBehaviour
 
     List<Transform> wayPoints;
 
-    [SerializeField] bool drawPathLine = false;
+    public bool drawPathLine = false;
 
     [SerializeField] float totalPathDistance;
 

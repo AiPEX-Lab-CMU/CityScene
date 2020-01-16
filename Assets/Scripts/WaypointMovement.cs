@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class WaypointMovement : MonoBehaviour
 {
-    public enum TypeOfObject { Car, Person };
+    public enum TypeOfObject { Person, Car };
 
     public TypeOfObject thisType;
 
     public List<Transform> wayPoints;
-
+        
     [SerializeField]
     Transform currentTarget;
 
@@ -26,7 +26,8 @@ public class WaypointMovement : MonoBehaviour
     //controls activation of movement
     bool shouldStartMove = false;
 
-    [SerializeField] Animator animator;
+    AnimationStateController animState;
+
     [SerializeField] bool debugPathDraw;
 
     LineRenderer lineDraw;
@@ -41,6 +42,10 @@ public class WaypointMovement : MonoBehaviour
         timerStopped = false;
 
         stopwatch = new Stopwatch();
+
+        if (thisType == TypeOfObject.Person)
+            animState = this.gameObject.GetComponent<AnimationStateController>();
+
 
         currentTarget = wayPoints[waypointCounter];
 
@@ -64,6 +69,7 @@ public class WaypointMovement : MonoBehaviour
 
             lineDraw.enabled = debugPathDraw;
         }
+
     }
 
     // Update is called once per frame
@@ -106,14 +112,20 @@ public class WaypointMovement : MonoBehaviour
 
         }
 
+        //set the animation state to idle if the movespeed is 0.0f
+        //set the animation state to walk if the movespeed is 0.25f
 
-
+        if (movespeed == 0.0f)
+            animState.animationState = AnimationStateController.HumanoidStates.Idle;
+        else if (movespeed == 0.25f)
+            animState.animationState = AnimationStateController.HumanoidStates.Walk;
+       
     }
 
     void MoveMe()
     {
 
-        if (!shouldMove || !shouldStartMove)
+        if (!shouldMove || !shouldStartMove || movespeed == 0)
             return;
 
         this.transform.LookAt(currentTarget);
