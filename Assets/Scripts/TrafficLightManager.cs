@@ -6,45 +6,17 @@ using UnityEngine;
 public class TrafficLightManager : MonoBehaviour
 {
 
-    public bool canPeopleWalk;
-    public bool canCarsGo;
-    public bool usePresetValue;
-    public bool generateRandomValue;
-    public float carsPassDuration;
-    public float peopleWalkDuration;
+    public bool carsCanGo;
+    public bool peopleCanWalk;
+    public bool noTurnOnRed;
 
     Renderer color;
 
-    [SerializeField] float peopleWalkTimer;
-    [SerializeField] float carsRunningTimer;
-
-    TrafficLightInfo trafficLightInfo;
 
     // Start is called before the first frame update
     void Start()
     {
         color = this.GetComponent<Renderer>();
-        color.material.SetColor("_Color", Color.green);
-        peopleWalkTimer = 0.0f;
-        carsRunningTimer = 0.0f;
-        Debug.Log("Start");
-        trafficLightInfo = GameObject.FindObjectOfType<TrafficLightInfo>();
-        canCarsGo = true;
-        canPeopleWalk = false;
-        if(usePresetValue)
-        {
-            carsPassDuration = trafficLightInfo.carsPassDuration;
-            peopleWalkDuration = trafficLightInfo.peopleWalkDuration;
-        }
-        else
-        {
-            System.Random rnd = new System.Random();
-            if(generateRandomValue)
-            {
-                carsPassDuration = rnd.Next(5, 15);
-                peopleWalkDuration = rnd.Next(5, 15);
-            }
-        }
     }
 
     //Truth table
@@ -56,30 +28,60 @@ public class TrafficLightManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (canCarsGo)
-            carsRunningTimer += Time.deltaTime;
+    }
 
-        if (canPeopleWalk)
-            peopleWalkTimer += Time.deltaTime;
-
-        if(carsRunningTimer > carsPassDuration)
+    public void SetToGreen()
+    {
+        color = this.GetComponent<Renderer>();
+        if (color.material.color != Color.green)
         {
-            canCarsGo = false;
-            canPeopleWalk = true;
-            peopleWalkTimer = 0.0f;
-            carsRunningTimer = 0.0f;
-            color.material.SetColor("_Color", Color.red);
-        }
-
-        if(peopleWalkTimer > peopleWalkDuration)
-        {
-            canPeopleWalk = false;
-            canCarsGo = true;
-            carsRunningTimer = 0.0f;
-            peopleWalkTimer = 0.0f;
             color.material.SetColor("_Color", Color.green);
+            peopleCanWalk = false;
+            carsCanGo = true;
         }
+    }
 
+    public void PedestriansCanWalk()
+    {
+        peopleCanWalk = true;
+    }
+
+    public void PedestriansCannotWalk()
+    {
+        peopleCanWalk = false;
+    }
+
+    public void SetToYellow()
+    {
+        color = this.GetComponent<Renderer>();
+        if (color.material.color != Color.yellow)
+        {
+            color.material.SetColor("_Color", Color.yellow);
+            peopleCanWalk = false;
+            carsCanGo = false;
+        }
+    }
+
+    public void SetToRed()
+    {
+        color = this.GetComponent<Renderer>();
+        if (color.material.color != Color.red)
+        {
+            color.material.SetColor("_Color", Color.red);
+            peopleCanWalk = false;
+            carsCanGo = false;
+        }
+    }
+
+    public void StartLeftTurn()
+    {
+        color = this.GetComponent<Renderer>();
+        if(color.material.color != Color.blue)
+        {
+            color.material.SetColor("_Color", Color.blue);
+            peopleCanWalk = false;
+            carsCanGo = false;
+        }
     }
 
 

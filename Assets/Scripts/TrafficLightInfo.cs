@@ -4,14 +4,13 @@ using UnityEngine;
 
 public class TrafficLightInfo : MonoBehaviour
 {
+    public float carPassDuration;
     public float peopleWalkDuration;
-    public float carsPassDuration;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("Start");
     }
 
     // Update is called once per frame

@@ -140,11 +140,11 @@ public class WaypointMovement : MonoBehaviour
 
         if (t)
         {
-            if(thisType == TypeOfObject.Person)
-                shouldMove = t.canPeopleWalk;
+            //if(thisType == TypeOfObject.Person)
+            //    shouldMove = t.canPeopleWalk;
 
-            if (thisType == TypeOfObject.Car)
-                shouldMove = t.canCarsGo;
+            //if (thisType == TypeOfObject.Car)
+            //    shouldMove = t.canCarsGo;
 
         }
 
