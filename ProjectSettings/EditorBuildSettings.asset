@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/City Project/Scenes/Scene - People and Visuals.unity
+    guid: e9b971bb4afb5814896b0dc4f9881b52
+  - enabled: 1
+    path: Assets/City Project/Scenes/Green_Market.unity
+    guid: 6ae4117f2dba52d4fb561c142ddbb5f2
   m_configObjects: {}
