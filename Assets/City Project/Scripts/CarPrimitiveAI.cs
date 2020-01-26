@@ -5,12 +5,15 @@ using UnityEngine;
 public class CarPrimitiveAI : MonoBehaviour
 {
 
-    WaypointMovement wm;
+    NavMeshTry wm;
+
+    int numberOfPeople;
 
     // Start is called before the first frame update
     void Start()
     {
-        wm = this.gameObject.GetComponent<WaypointMovement>();
+        numberOfPeople = 0;
+        wm = this.gameObject.GetComponent<NavMeshTry>();
     }
 
     // Update is called once per frame
@@ -21,26 +24,24 @@ public class CarPrimitiveAI : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("r");
+        /* Register pedestrian encountered */
         if (other.gameObject.CompareTag("Person"))
         {
-
-
-
-            wm.shouldMove = false;
-
+            wm.AddPedestrian(other.gameObject);
+            numberOfPeople++;
         }
 
     }
 
     private void OnTriggerExit(Collider other)
     {
-
+        /* Deregister pedestrian */
         if (other.gameObject.CompareTag("Person"))
         {
-
-            wm.shouldMove = true;
-
+            wm.RemovePedestrian(other.gameObject);
+            numberOfPeople--;
+            if(numberOfPeople == 0)
+                wm.CarGo();
         }
 
 

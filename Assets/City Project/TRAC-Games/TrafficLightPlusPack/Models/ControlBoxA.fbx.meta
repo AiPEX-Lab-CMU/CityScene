@@ -1,0 +1,290 @@
+fileFormatVersion: 2
+guid: e8acc0e1024f948dca8efacd5036d027
+ModelImporter:
+  serializedVersion: 26
+  internalIDToNameTable:
+  - first:
+      74: -4367765468765699473
+    second: ControlBoxA LP|arrow base (2)|Take 001|Layer 001
+  - first:
+      74: -6406771370480940344
+    second: ControlBoxA LP|arrow base (3)|Take 001|Layer 001
+  - first:
+      74: 1074183245134828363
+    second: ControlBoxA LP|arrow base|Take 001|Layer 001
+  - first:
+      74: 7024099657914323818
+    second: ControlBoxA LP|Back Cutter|Take 001|Layer 001
+  - first:
+      74: -4970539502237465277
+    second: ControlBoxA LP|Button Base|Take 001|Layer 001
+  - first:
+      74: 3070058225809761147
+    second: ControlBoxA LP|Button Cutter|Take 001|Layer 001
+  - first:
+      74: 5225883521643278374
+    second: ControlBoxA LP|Button Surface cutter|Take 001|Layer 001
+  - first:
+      74: 4156449181215082157
+    second: ControlBoxA LP|Button surround|Take 001|Layer 001
+  - first:
+      74: 4262011534981308913
+    second: ControlBoxA LP|Button|Take 001|Layer 001
+  - first:
+      74: 4981641341040277943
+    second: ControlBoxA LP|Cabinet Door Lock Handle|Take 001|Layer 001
+  - first:
+      74: -8110355252027503756
+    second: ControlBoxA LP|Cabinet Vent.lxl (5)|Take 001|Layer 001
+  - first:
+      74: -1038696890016605952
+    second: ControlBoxA LP|Cabinet Vent.lxl (6)|Take 001|Layer 001
+  - first:
+      74: 364412404978475829
+    second: ControlBoxA LP|Cabinet Vent|Take 001|Layer 001
+  - first:
+      74: -5701452243158094189
+    second: ControlBoxA LP|Camera|Take 001|Layer 001
+  - first:
+      74: -728419659230750276
+    second: ControlBoxA LP|Control Box A|Take 001|Layer 001
+  - first:
+      74: -571866282895331645
+    second: ControlBoxA LP|ControlBox B|Take 001|Layer 001
+  - first:
+      74: 3007924348409572959
+    second: ControlBoxA LP|ControlBoxA HP Bake|Take 001|Layer 001
+  - first:
+      74: 5880435188194552290
+    second: ControlBoxA LP|ControlBoxA LP Bake Cage|Take 001|Layer 001
+  - first:
+      74: -6687109402577861871
+    second: ControlBoxA LP|ControlBoxA LP Bake|Take 001|Layer 001
+  - first:
+      74: 1706756561399899761
+    second: ControlBoxA LP|ControlBoxA LP|Take 001|Layer 001
+  - first:
+      74: -8813607484311074372
+    second: ControlBoxA LP|ControlBoxB HP Bake|Take 001|Layer 001
+  - first:
+      74: -8630725264065103380
+    second: ControlBoxA LP|ControlBoxB LP Bake|Take 001|Layer 001
+  - first:
+      74: -6095830163686770904
+    second: ControlBoxA LP|ControlBoxB LP|Take 001|Layer 001
+  - first:
+      74: -7156116583065349686
+    second: ControlBoxA LP|Crosswalk Button Assembly HP|Take 001|Layer 001
+  - first:
+      74: 5860146427483527215
+    second: ControlBoxA LP|Crosswalk Button Assembly LP|Take 001|Layer 001
+  - first:
+      74: -5153414427091188439
+    second: ControlBoxA LP|Directional Light|Take 001|Layer 001
+  - first:
+      74: -4274986492874795164
+    second: ControlBoxA LP|Fustion Control Box Handle|Take 001|Layer 001
+  - first:
+      74: -5903933861241913665
+    second: ControlBoxA LP|Group Locator|Take 001|Layer 001
+  - first:
+      74: -3146411682306301544
+    second: ControlBoxA LP|OutdoorLightingPack|Take 001|Layer 001
+  - first:
+      74: -370070423306360357
+    second: ControlBoxA LP|Presets|Take 001|Layer 001
+  - first:
+      74: 3026130034016661629
+    second: ControlBoxA LP|Q-CylEllip Q-FlatBox1|Take 001|Layer 001
+  - first:
+      74: -5886323256057286007
+    second: ControlBoxA LP|Q-CylEllip1.lxl (2)|Take 001|Layer 001
+  - first:
+      74: 4927150112060183878
+    second: ControlBoxA LP|Q-CylEllip1.lxl (5)|Take 001|Layer 001
+  - first:
+      74: 5742744631407755630
+    second: ControlBoxA LP|Q-CylEllip1.lxl (8)|Take 001|Layer 001
+  - first:
+      74: -3158712580797245895
+    second: ControlBoxA LP|Q-Cylinder Q-Cylinder|Take 001|Layer 001
+  - first:
+      74: -3814918830694442842
+    second: ControlBoxA LP|Q-Cylinder1.lxl (2)|Take 001|Layer 001
+  - first:
+      74: 7259709744996615103
+    second: ControlBoxA LP|Q-CylinderShort Backup|Take 001|Layer 001
+  - first:
+      74: -6511131077599456573
+    second: ControlBoxA LP|Q-FlatBox1 Q-CylEllip (2)|Take 001|Layer 001
+  - first:
+      74: -7413493004241268184
+    second: ControlBoxA LP|Q-FlatBox1 Q-CylEllip (3)|Take 001|Layer 001
+  - first:
+      74: 8950042704495431689
+    second: ControlBoxA LP|Q-FlatBox1 Q-CylEllip|Take 001|Layer 001
+  - first:
+      74: -7076584320080349582
+    second: ControlBoxA LP|Q-FlatBox1.lxl (3)|Take 001|Layer 001
+  - first:
+      74: -4401504683285363574
+    second: ControlBoxA LP|Q-FlatBox1.lxl (5)|Take 001|Layer 001
+  - first:
+      74: 8661622932805854728
+    second: ControlBoxA LP|Q-FlatBox1.lxl (8)|Take 001|Layer 001
+  - first:
+      74: 8435558765792843900
+    second: ControlBoxA LP|Screw Head Hex|Take 001|Layer 001
+  - first:
+      74: -8706024170840609048
+    second: ControlBoxA LP|Screw Hole Cutter (2)|Take 001|Layer 001
+  - first:
+      74: 4529308616461446126
+    second: ControlBoxA LP|Screw Hole Cutter|Take 001|Layer 001
+  - first:
+      74: -7594311100867976116
+    second: ControlBoxA LP|StreetLightDouble|Take 001|Layer 001
+  - first:
+      74: 5152013724684426007
+    second: ControlBoxA LP|StreetLightSingle|Take 001|Layer 001
+  - first:
+      74: -7906449229578273237
+    second: ControlBoxA LP|Strips (2)|Take 001|Layer 001
+  - first:
+      74: 7498910342473089044
+    second: ControlBoxA LP|Strips (3)|Take 001|Layer 001
+  - first:
+      74: 1905510648527687875
+    second: ControlBoxA LP|Strips|Take 001|Layer 001
+  - first:
+      74: -381743111641988992
+    second: ControlBoxA LP|Texture Group|Take 001|Layer 001
+  - first:
+      74: 1326104099176001423
+    second: ControlBoxA LP|Top Cutter|Take 001|Layer 001
+  - first:
+      74: 2755470566181331359
+    second: ControlBoxA LP|TrafficLightMulit|Take 001|Layer 001
+  - first:
+      74: 7718037797882843907
+    second: ControlBoxA LP|TrafficLightPole|Take 001|Layer 001
+  - first:
+      74: 6800226373411900480
+    second: ControlBoxA LP|TrafficLightSingleLampLeft|Take 001|Layer 001
+  - first:
+      74: 11902837498807025
+    second: ControlBoxA LP|TrafficLightSingleLampRight|Take 001|Layer 001
+  - first:
+      74: -3056587368650023648
+    second: ControlBoxA LP|TrafficLightSingleModule|Take 001|Layer 001
+  - first:
+      74: 7408434993014786582
+    second: ControlBoxA LP|TrafficLightSingle|Take 001|Layer 001
+  - first:
+      74: -1449668966462360782
+    second: ControlBoxA LP|TrafficLightTwoLanesA|Take 001|Layer 001
+  - first:
+      74: 4534180688713764568
+    second: ControlBoxA LP|TrafficLightTwoLanesB|Take 001|Layer 001
+  - first:
+      74: -7057868343578884193
+    second: ControlBoxA LP|TrafficLightWalkOnlyModuleLeft|Take 001|Layer 001
+  - first:
+      74: -6669454247499946774
+    second: ControlBoxA LP|TrafficLightWalkOnlyModuleRight|Take 001|Layer 001
+  - first:
+      74: -748554988664743333
+    second: ControlBoxA LP|TrafficLightWalkOnly|Take 001|Layer 001
+  - first:
+      74: 7136329494314372087
+    second: ControlBoxA LP|Walk Button Assembly|Take 001|Layer 001
+  externalObjects: {}
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 1
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 0
+    importBlendShapes: 0
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 0
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

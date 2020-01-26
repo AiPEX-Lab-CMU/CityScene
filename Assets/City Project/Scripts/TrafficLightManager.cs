@@ -10,13 +10,13 @@ public class TrafficLightManager : MonoBehaviour
     public bool peopleCanWalk;
     public bool noTurnOnRed;
 
-    Renderer color;
+    TrafficSetController LightColor;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        color = this.GetComponent<Renderer>();
+        LightColor = (TrafficSetController)this.GetComponent<TrafficSetController>();
     }
 
     //Truth table
@@ -32,10 +32,10 @@ public class TrafficLightManager : MonoBehaviour
 
     public void SetToGreen()
     {
-        color = this.GetComponent<Renderer>();
-        if (color.material.color != Color.green)
+        LightColor = (TrafficSetController)this.GetComponent<TrafficSetController>();
+        if (LightColor.state != PhaseState.Go)
         {
-            color.material.SetColor("_Color", Color.green);
+            LightColor.state = PhaseState.Go;
             peopleCanWalk = false;
             carsCanGo = true;
         }
@@ -43,20 +43,23 @@ public class TrafficLightManager : MonoBehaviour
 
     public void PedestriansCanWalk()
     {
+        LightColor.state = PhaseState.Walk;
         peopleCanWalk = true;
     }
 
     public void PedestriansCannotWalk()
     {
+        LightColor = (TrafficSetController)this.GetComponent<TrafficSetController>();
+        LightColor.state = PhaseState.DontWalk;
         peopleCanWalk = false;
     }
 
     public void SetToYellow()
     {
-        color = this.GetComponent<Renderer>();
-        if (color.material.color != Color.yellow)
+        LightColor = (TrafficSetController)this.GetComponent<TrafficSetController>();
+        if (LightColor.state != PhaseState.Warn)
         {
-            color.material.SetColor("_Color", Color.yellow);
+            LightColor.state = PhaseState.Warn;
             peopleCanWalk = false;
             carsCanGo = false;
         }
@@ -64,10 +67,10 @@ public class TrafficLightManager : MonoBehaviour
 
     public void SetToRed()
     {
-        color = this.GetComponent<Renderer>();
-        if (color.material.color != Color.red)
+        LightColor = (TrafficSetController)this.GetComponent<TrafficSetController>();
+        if (LightColor.state != PhaseState.Stop)
         {
-            color.material.SetColor("_Color", Color.red);
+            LightColor.state = PhaseState.Stop;
             peopleCanWalk = false;
             carsCanGo = false;
         }
@@ -75,13 +78,15 @@ public class TrafficLightManager : MonoBehaviour
 
     public void StartLeftTurn()
     {
-        color = this.GetComponent<Renderer>();
-        if(color.material.color != Color.blue)
+        /*
+        LightColor = (TrafficSetController)this.GetComponent<TrafficSetController>();
+        if (LightColor.state != PhaseState.Stop)
         {
             color.material.SetColor("_Color", Color.blue);
             peopleCanWalk = false;
             carsCanGo = false;
         }
+        */
     }
 
 

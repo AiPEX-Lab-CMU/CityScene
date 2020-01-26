@@ -22,29 +22,31 @@ public class PersonPrimitiveAI : MonoBehaviour
 
         RaycastHit hit;
 
-        if(Physics.Raycast(this.transform.position, this.transform.forward, out hit, 100.0f))
+        if (Physics.Raycast(this.transform.position, this.transform.forward, out hit, 100.0f))
         {
 
             if (hit.collider.gameObject.CompareTag("Car"))
             {
                 //there is a car in front of this person, now need to check distance
-                if(hit.distance < 1.0f)
+                /* If the car is already waiting for the person then the person don't need to stop, just pass through quickly */
+                if (hit.distance < 1.0f && !hit.collider.gameObject.GetComponent<NavMeshTry>().InCarRange(this.gameObject))
                 {
-
                     wm.shouldMove = false;
 
                     goto PointA;
 
                 }
 
-                
+
 
             }
 
         }
-        wm.shouldMove = true;
+        /* If not waiting for traffic light, then the person should keep walking */
+        if (!wm.waitingForTrafficLight)
+            wm.shouldMove = true;
 
-        PointA:
+    PointA:
 
         return;
     }

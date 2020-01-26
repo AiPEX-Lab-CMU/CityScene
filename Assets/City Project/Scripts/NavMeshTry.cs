@@ -28,10 +28,19 @@ public class NavMeshTry : MonoBehaviour
 
     int index;
 
-    //bool hitsCenterLane;
+    Stopwatch stopWatch;
+
+    string carID;
+
+    SendMessage messageSender;
+
+    HashSet<GameObject> pedestrians;
 
     void Start()
     {
+        pedestrians = new HashSet<GameObject>();
+        carID = gameObject.name.Substring(3);
+        stopWatch = new Stopwatch();
         encounteredIntersection = null;
         waitingForTrafficLight = false;
         Random.seed = System.DateTime.Now.Millisecond;
@@ -43,7 +52,7 @@ public class NavMeshTry : MonoBehaviour
         else
             index = 0;
         agent.destination = wayPoints[index].position;
-        //hitsCenterLane = false;
+        messageSender = (SendMessage)GameObject.Find("messageSender").GetComponent<SendMessage>();
     }
 
     private IEnumerator WaitForStopSign()
@@ -68,31 +77,38 @@ public class NavMeshTry : MonoBehaviour
 
         if (t)
         {
-            if(!agent.isStopped && !t.carsCanGo && encounteredIntersection != other.gameObject.transform.parent.gameObject.GetComponent<TrafficIntersection>())
+            if(encounteredIntersection != other.gameObject.transform.parent.gameObject.GetComponent<TrafficIntersection>())
             {
-                UnityEngine.Debug.Log("Intersection is different, should listen now");
                 encounteredIntersection = other.gameObject.transform.parent.gameObject.GetComponent<TrafficIntersection>();
-                if(!t.noTurnOnRed && Vector3.Distance(agent.steeringTarget, agent.transform.position) < 0.5f)
+                if (!agent.isStopped && !t.carsCanGo)
                 {
-                    /* Determine if it is turning */
-                    UnityEngine.Debug.Log("Should be turning now");
-                    Vector3 turningVector = agent.steeringTarget - agent.transform.position;
-                    /* If turning left then the car still has to wait for green light */
-                    if (LeftTurn())
+                    UnityEngine.Debug.Log("Intersection is different, should listen now");
+                    if (!t.noTurnOnRed && Vector3.Distance(agent.steeringTarget, agent.transform.position) < 0.5f)
                     {
-                        UnityEngine.Debug.Log("Turning left");
-                        waitingForTrafficLight = true;
-                        agent.isStopped = !t.carsCanGo;
+                        /* Determine if it is turning */
+                        UnityEngine.Debug.Log("Should be turning now");
+                        Vector3 turningVector = agent.steeringTarget - agent.transform.position;
+                        /* If turning left then the car still has to wait for green light */
+                        if (LeftTurn())
+                        {
+                            UnityEngine.Debug.Log("Turning left");
+                            stopWatch.Reset();
+                            waitingForTrafficLight = true;
+                            agent.isStopped = !t.carsCanGo;
+                            stopWatch.Start();
+                        }
+                        else
+                        {
+                            UnityEngine.Debug.Log("Turning right");
+                        }
                     }
                     else
                     {
-                        UnityEngine.Debug.Log("Turning right");
+                        stopWatch.Reset();
+                        waitingForTrafficLight = true;
+                        agent.isStopped = !t.carsCanGo;
+                        stopWatch.Start();
                     }
-                }
-                else
-                {
-                    waitingForTrafficLight = true;
-                    agent.isStopped = !t.carsCanGo;
                 }
             }
             return;
@@ -103,12 +119,17 @@ public class NavMeshTry : MonoBehaviour
         {
             if (nmt.agent.isStopped  && !agent.isStopped)
             {
-                UnityEngine.Debug.Log("The car at front has stopped");
-                if(nmt.waitingForTrafficLight && !waitingForTrafficLight)
-                    waitingForTrafficLight = true;
-                agent.isStopped = true;
-                carInFront = nmt;
+                if (Vector3.Angle(this.transform.forward, nmt.gameObject.transform.forward) < 90.0f)
+                {
+                    UnityEngine.Debug.Log("The car at front has stopped");
+                    if (nmt.waitingForTrafficLight && !waitingForTrafficLight)
+                        waitingForTrafficLight = true;
+                    agent.isStopped = true;
+                    carInFront = nmt;
+                }
+                return;
             }
+
             return;
         }
     }
@@ -118,17 +139,19 @@ public class NavMeshTry : MonoBehaviour
     {
         TrafficLightManager t = other.gameObject.GetComponent<TrafficLightManager>();
 
-        if (t && agent.isStopped)
+        if (t && waitingForTrafficLight && agent.isStopped == true)
         {
             agent.isStopped = !t.carsCanGo;
             if (!agent.isStopped)
+            {
                 waitingForTrafficLight = false;
+                stopWatch.Stop();
+                string intersectionID = t.transform.parent.name.Substring(13);
+                string lightID = other.gameObject.name.Substring(12);
+                string result = carID + "#" + intersectionID + "#" + lightID + "#" + stopWatch.Elapsed.TotalMilliseconds.ToString();
+                messageSender.sendBytes("003", result);
+            }
         }
-
-        /*if(other.gameObject.CompareTag("CenterLane") && Vector3.Distance(agent.transform.position, other.gameObject.transform.position) < 0.1f)
-        {
-            hitsCenterLane = true;
-        }*/
     }
 
 
@@ -147,11 +170,6 @@ public class NavMeshTry : MonoBehaviour
                 agent.isStopped = false;
             }
         }
-        /*
-        if (other.gameObject.CompareTag("CenterLane"))
-        {
-            hitsCenterLane = false;
-        }*/
     }
 
     void Update()
@@ -163,21 +181,40 @@ public class NavMeshTry : MonoBehaviour
             if (randomWalking)
                 index = Random.Range(0, 100) % (wayPoints.Count - 1);
             else
-                index++;
+                index = (index + 1) % (wayPoints.Count - 1);
             UnityEngine.Debug.Log("Waypoint " + index.ToString() + " is chosen");
             agent.destination = wayPoints[index].position;
         }
 
     }
 
-    public void CarStop()
+    public bool IsStopped()
     {
+        return agent.isStopped;
+    }
+
+    public void AddPedestrian(GameObject gameobj)
+    {
+        pedestrians.Add(gameobj);
         agent.isStopped = true;
+    }
+
+    public void RemovePedestrian(GameObject gameobj)
+    {
+        if(pedestrians.Contains(gameobj))
+            pedestrians.Remove(gameobj);
+    }
+
+    public bool InCarRange(GameObject gameobj)
+    {
+        return pedestrians.Contains(gameobj);
     }
 
     public void CarGo()
     {
-        agent.isStopped = false;
+        /* Only go if no people in front and not waiting for traffic light */
+        if(!waitingForTrafficLight)
+            agent.isStopped = false;
     }
 
     bool LeftTurn()
