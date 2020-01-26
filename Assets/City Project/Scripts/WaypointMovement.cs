@@ -69,12 +69,12 @@ public class WaypointMovement : MonoBehaviour
             if (shouldMove)
             {
 
-                //animator.SetBool("shouldMove", true);
+                animator.SetBool("shouldMove", true);
 
             } else
             {
 
-               // animator.SetBool("shouldMove", false);
+                animator.SetBool("shouldMove", false);
 
             }
 
@@ -121,7 +121,7 @@ public class WaypointMovement : MonoBehaviour
         {
             if(thisType == TypeOfObject.Person)
                 shouldMove = t.peopleCanWalk;
-                waitingForTrafficLight = t.peopleCanWalk;
+                waitingForTrafficLight = !t.peopleCanWalk;
 
             if (thisType == TypeOfObject.Car)
                 shouldMove = t.carsCanGo;
