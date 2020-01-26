@@ -43,11 +43,11 @@ public class ShoppingList : MonoBehaviour
             maxItems = rand.Next(15);
         }
         int count = 0;
-        List<KeyValuePair<int, double>> map = createSoftmaxMap(prob.Value);
-        map.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
-        Debug.Log("No of Items: " + maxItems);
+        
         while(count<maxItems)
         {
+            List<KeyValuePair<int, double>> map = createSoftmaxMap(prob.Value);
+            map.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
             double remaining = final_prob;
             for(int i=0; i<map.Count; i++)
             {
@@ -57,6 +57,7 @@ public class ShoppingList : MonoBehaviour
                 {
                     count++;
                     items.Add(pc.items[map[i].Key]);
+                    prob.Value[map[i].Key] = probability / 2;
                     remaining -= probability;
                     if (count == maxItems || remaining.Equals(0))
                         break;

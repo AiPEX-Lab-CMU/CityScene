@@ -83,7 +83,6 @@ public class customerHandler : MonoBehaviour
         System.Random random = new System.Random();
         for(int i=0; i<20; i++)
         {
-            Debug.Log("Creating Character");
             //int index = random.Next(7);
             //GameObject market = GameObject.Find("Green_Market");
             //GameObject trolley = Instantiate(customers[index]);
