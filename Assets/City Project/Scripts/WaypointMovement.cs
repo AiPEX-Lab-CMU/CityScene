@@ -29,6 +29,8 @@ public class WaypointMovement : MonoBehaviour
     /* Boolean showing if the pedestrian is waiting for traffic light */
     public bool waitingForTrafficLight;
 
+    AnimationStateController animState;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -57,6 +59,8 @@ public class WaypointMovement : MonoBehaviour
 
         }
 
+        if (thisType == TypeOfObject.Person)
+            animState = this.gameObject.GetComponent<AnimationStateController>();
     }
 
     // Update is called once per frame
@@ -69,12 +73,12 @@ public class WaypointMovement : MonoBehaviour
             if (shouldMove)
             {
 
-                animator.SetBool("shouldMove", true);
+                animState.animationState = AnimationStateController.HumanoidStates.Walk;
 
             } else
             {
 
-                animator.SetBool("shouldMove", false);
+                animState.animationState = AnimationStateController.HumanoidStates.Idle;
 
             }
 
