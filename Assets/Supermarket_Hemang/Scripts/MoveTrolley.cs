@@ -10,6 +10,7 @@ using System;
 public class MoveTrolley : MonoBehaviour
 {
     Dictionary<string, List<string>> markerItems;
+    int waitTime = 40;
     ShoppingList sl;
     bool isMoving = false;
     bool isPicking = false;
@@ -54,40 +55,6 @@ public class MoveTrolley : MonoBehaviour
         //Debug.Log("Total items = " + totalItems);
     }
 
-    //IEnumerator load()
-    //{
-    //    markerItems = new Dictionary<string, List<string>>();
-    //    markerCount = 0;
-    //    sl = transform.GetComponent<ShoppingList>();
-    //    //do
-    //    //{
-    //    //    sl.generateShoppingList();
-    //    //} while (sl.items.Count <= 0);
-    //    sl.generateShoppingListBySoftmax();
-    //    lv = transform.Find("TrolleyLocal").GetComponent<LocalVariables>();
-    //    lv.Get("isMoving").Set(Variable.DataType.Bool, false);
-    //    lv.Get("isPicking").Set(Variable.DataType.Bool, false);
-    //    lv.Get("isComplete").Set(Variable.DataType.Bool, false);
-    //    lv.Get("isRoundComplete").Set(Variable.DataType.Bool, true);
-    //    itemsPicked = 0;
-    //    totalItems = sl.items.Count;
-    //    if(totalItems<=3)
-    //    {
-    //        Destroy(transform.Find("helper_trolley_body").gameObject);
-    //        Actions actions = transform.Find("MoveItem").GetComponent<Actions>();
-    //        ActionTransformMove move = actions.actionsList.actions[0].GetComponent<ActionTransformMove>();
-    //        move.moveTo.targetTransform = transform.Find("Basket");
-    //    }
-    //    else
-    //    {
-    //        Destroy(transform.Find("Basket").gameObject);
-    //    }
-    //    getNearbyItems();
-    //    message = "Items bought: ";
-    //    //Debug.Log("Total items = " + totalItems);
-    //    isLoaded = true;
-    //    yield return null;
-    //}
 
 
     public void load()
@@ -124,6 +91,7 @@ public class MoveTrolley : MonoBehaviour
         message = "Items bought: ";
         isLoaded = true;
         start = DateTime.Now;
+        StartCoroutine(randPickItem());
     }
     // Update is called once per frame
     void Update()
@@ -173,71 +141,49 @@ public class MoveTrolley : MonoBehaviour
     }
 
 
-    //void Update()
-    //{
-    //    if (isLoaded)
-    //    {
-    //        if (!(bool)lv.Get("isComplete").Get() && !(bool)lv.Get("isMoving").Get())
-    //        {
-    //            if ((bool)lv.Get("isRoundComplete").Get())
-    //            {
-    //                if (markerCount <= 39)
-    //                {
-    //                    //move cart to next market
-    //                    lv.Get("isRoundComplete").Set(Variable.DataType.Bool, false);
-    //                    lv.Get("isMoving").Set(Variable.DataType.Bool, true);
-    //                    nextMarker = "Marker" + markerCount;
-    //                    Actions actions = transform.Find("Character").GetComponent<Actions>();
-    //                    actions.Execute();
-    //                    moveToMarker();
-    //                }
-    //                else
-    //                {
-    //                    lv.Get("isComplete").Set(Variable.DataType.Bool, true);
-    //                    checkout();
-    //                }
-    //            }
-
-    //            else if (!(bool)lv.Get("isRoundComplete").Get() && !(bool)lv.Get("isPicking").Get())
-    //            {
-
-    //                if (markerItems.ContainsKey(nextMarker) && index < markerItems[nextMarker].Count)
-    //                {
-    //                    lv.Get("isPicking").Set(Variable.DataType.Bool, true);
-    //                    nextItem = markerItems[nextMarker][index];
-    //                    message = message + "\t" + nextItem;
-    //                    index++;
-    //                    moveItemToCart();
-    //                }
-    //                else
-    //                {
-    //                    endRound();
-    //                }
-    //            }
-    //        }
-    //    }
-
-    //}
-
 
     void loadMarkerMap()
     {
-        markerMap.Add("orange", "Marker1");
-        markerMap.Add("potatoes", "Marker13");
-        markerMap.Add("yogurt", "Marker4");
-        markerMap.Add("Cheese", "Marker4");
-        markerMap.Add("butter", "Marker5");
-        markerMap.Add("beef", "Marker7");
-        markerMap.Add("chicken", "Marker8");
-        markerMap.Add("onion", "Marker12");
-        markerMap.Add("garlic", "Marker12");
-        markerMap.Add("pepper_green", "Marker12");
-        markerMap.Add("papertowels", "Marker19");
-        markerMap.Add("bread_", "Marker29");
-        markerMap.Add("milk", "Marker31");
-        markerMap.Add("cola", "Marker35");
-        markerMap.Add("beer", "Marker35");
-        markerMap.Add("wvine", "Marker37");
+        MarketItems mi = GameObject.Find("Green_Market").GetComponent<MarketItems>();
+        markerMap = mi.getMarkerMap();
+    }
+
+    IEnumerator randPickItem()
+    {
+        MarketItems mi = GameObject.Find("Green_Market").GetComponent<MarketItems>();
+        System.Random rand = new System.Random();
+        while (!isComplete)
+        {
+            yield return new WaitForSeconds(waitTime);
+            if (!isComplete)
+            {
+                // get player's next marker
+                nextMarker = "Marker" + markerCount;
+                // find items near next marker (use the markerMap variable)
+                int x = mi.markerItems[nextMarker].Count;
+                int ind = rand.Next(x);
+                if(!markerItems.ContainsKey(nextMarker))
+                {
+                    List<string> temp = new List<string>();
+                    markerItems.Add(nextMarker, temp);
+                }
+                markerItems[nextMarker].Add(mi.markerItems[nextMarker][ind]);
+                totalItems++;
+                Debug.Log("Added item " + mi.markerItems[nextMarker][ind] + "to the list.");
+                //foreach (KeyValuePair<string, string> entry in markerMap)
+                //{
+                //    if (entry.Value == nextMarker) // verify the same marker as nextMarker
+                //    {
+                //        // Add the item to that marker (Add to markerItem variable)
+                //        if (!markerItems[nextMarker].Contains(entry.Key)) // item is currently not in the markerItems
+                //        {
+                //            markerItems[nextMarker].Add(entry.Key);
+                //        }
+                //    }
+                //}
+                // to add or remove from dictionary, refer other functions in the MoveTrolley.cs script
+            }
+        }
     }
 
     public void checkShoppingComplete()
@@ -309,35 +255,6 @@ public class MoveTrolley : MonoBehaviour
                 markerItems.Add(markerMap[item], temp);
             }
         }
-        //bool[] visited = new bool[sl.items.Count];
-        //Transform[] markerList = GameObject.Find("MovementMarkers").GetComponentsInChildren<Transform>();
-        //foreach(Transform g in markerList)
-        //{
-        //    int i = 0;
-        //    foreach(string item in sl.items)
-        //    {
-        //        GameObject thisItem = findItemObject(item);
-        //        double x = System.Math.Pow((thisItem.transform.position.x - g.transform.position.x), 2);
-        //        double z = System.Math.Pow((thisItem.transform.position.z - g.transform.position.z), 2);
-        //        double dist = System.Math.Sqrt((x + z));
-        //        if(dist<=3 && visited[i]!=true)
-        //        {
-        //            visited[i] = true;
-        //            if(markerItems.ContainsKey(g.name))
-        //            {
-        //                markerItems[g.name].Add(item);
-        //            }
-        //            else
-        //            {
-        //                List<string> temp = new List<string>();
-        //                temp.Add(item);
-        //                markerItems.Add(g.name, temp);
-        //            }
-        //        }
-        //        i++;
-        //    }
-        //}
-
     }
 
     GameObject findItemObject(string item)
@@ -390,6 +307,7 @@ public class MoveTrolley : MonoBehaviour
         actions.Execute();
         end = DateTime.Now;
         TimeSpan time = end - start;
+        //Data to be sent to Python
         Debug.Log(message);
         Debug.Log("Unavailable items: " + unavailable);
         Debug.Log("Time Spent in the market = " + time.TotalSeconds + " seconds.");

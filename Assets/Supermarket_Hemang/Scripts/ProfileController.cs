@@ -40,7 +40,7 @@ public class ProfileController : MonoBehaviour
         profiles.Add("Meat");
         profiles.Add("Dairy");
         profiles.Add("Party");
-        using(var reader = new StreamReader(@"Assets/Supermarket_Hemang/profiles.csv"))
+        using(var reader = new StreamReader(@"Assets/Supermarket_Hemang/Scripts/profiles.csv"))
         {
             while(!reader.EndOfStream)
             {
