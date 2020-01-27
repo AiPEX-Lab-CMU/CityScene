@@ -212,7 +212,7 @@ public class MarketItems : MonoBehaviour
 
     void getDetails()
     {
-        using (var reader = new StreamReader(@"Assets/shelfData.txt"))
+        using (var reader = new StreamReader(@"Assets/Supermarket_Hemang/shelfData.txt"))
         {
             shelves = new Dictionary<string, Shelf>();
             while(!reader.EndOfStream)
