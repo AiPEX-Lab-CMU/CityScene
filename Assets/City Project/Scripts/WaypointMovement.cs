@@ -21,6 +21,12 @@ public class WaypointMovement : MonoBehaviour
 
     public bool shouldMove = true;
 
+    public bool isStanding = false;
+
+    public bool shouldStartMove = false;
+
+    [SerializeField] float beginDelay;
+
     [SerializeField] Animator animator;
     [SerializeField] bool debugPathDraw;
 
@@ -61,6 +67,9 @@ public class WaypointMovement : MonoBehaviour
 
         if (thisType == TypeOfObject.Person)
             animState = this.gameObject.GetComponent<AnimationStateController>();
+
+        Invoke("StartMove", beginDelay);
+
     }
 
     // Update is called once per frame
@@ -70,12 +79,14 @@ public class WaypointMovement : MonoBehaviour
         if(thisType == TypeOfObject.Person)
         {
 
-            if (shouldMove)
+            if (shouldMove && !isStanding)
             {
 
                 animState.animationState = AnimationStateController.HumanoidStates.Walk;
 
-            } else
+            }
+
+            if(!shouldMove || isStanding)
             {
 
                 animState.animationState = AnimationStateController.HumanoidStates.Idle;
@@ -108,7 +119,7 @@ public class WaypointMovement : MonoBehaviour
     void MoveMe()
     {
 
-        if (!shouldMove)
+        if (!shouldMove || isStanding || !shouldStartMove)
             return;
 
         this.transform.LookAt(currentTarget);
@@ -117,15 +128,15 @@ public class WaypointMovement : MonoBehaviour
 
     }
 
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         TrafficLightManager t = other.gameObject.GetComponent<TrafficLightManager>();
 
         if (t)
         {
-            if(thisType == TypeOfObject.Person)
-                shouldMove = t.peopleCanWalk;
-                waitingForTrafficLight = !t.peopleCanWalk;
+            //if(thisType == TypeOfObject.Person)
+            //    shouldMove = t.peopleCanWalk;
+            //    waitingForTrafficLight = !t.peopleCanWalk;
 
             if (thisType == TypeOfObject.Car)
                 shouldMove = t.carsCanGo;
@@ -134,5 +145,11 @@ public class WaypointMovement : MonoBehaviour
 
     }
 
+    void StartMove()
+    {
+
+        shouldStartMove = true;
+
+    }
 
 }
