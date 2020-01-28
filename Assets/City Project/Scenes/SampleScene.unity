@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.6544427, g: 0.6806491, b: 0.7183655, a: 1}
+  m_IndirectSpecularColor: {r: 0.6544428, g: 0.68064916, b: 0.7183655, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1427,10 +1427,11 @@ MonoBehaviour:
   - {fileID: 851660364}
   - {fileID: 1406608349}
   currentTarget: {fileID: 0}
-  beginDelay: 0
   movespeed: 0.25
   shouldMove: 1
+  animator: {fileID: 0}
   debugPathDraw: 0
+  waitingForTrafficLight: 0
 --- !u!95 &183399940
 Animator:
   serializedVersion: 3
@@ -1558,10 +1559,11 @@ MonoBehaviour:
   - {fileID: 851660364}
   - {fileID: 1406608349}
   currentTarget: {fileID: 0}
-  beginDelay: 0
   movespeed: 0.25
   shouldMove: 1
+  animator: {fileID: 0}
   debugPathDraw: 0
+  waitingForTrafficLight: 0
 --- !u!95 &198073077
 Animator:
   serializedVersion: 3
@@ -3719,10 +3721,11 @@ MonoBehaviour:
   - {fileID: 373384168}
   - {fileID: 1301968147}
   currentTarget: {fileID: 0}
-  beginDelay: 0
   movespeed: 0.25
   shouldMove: 1
+  animator: {fileID: 0}
   debugPathDraw: 0
+  waitingForTrafficLight: 0
 --- !u!95 &403882022
 Animator:
   serializedVersion: 3
@@ -4538,10 +4541,11 @@ MonoBehaviour:
   - {fileID: 465901782}
   - {fileID: 726084680}
   currentTarget: {fileID: 0}
-  beginDelay: 0
   movespeed: 0.25
   shouldMove: 1
+  animator: {fileID: 0}
   debugPathDraw: 0
+  waitingForTrafficLight: 0
 --- !u!95 &464971241
 Animator:
   serializedVersion: 3
@@ -5404,10 +5408,11 @@ MonoBehaviour:
   - {fileID: 373384168}
   - {fileID: 1301968147}
   currentTarget: {fileID: 0}
-  beginDelay: 0
   movespeed: 0.25
   shouldMove: 1
+  animator: {fileID: 0}
   debugPathDraw: 0
+  waitingForTrafficLight: 0
 --- !u!95 &556407002
 Animator:
   serializedVersion: 3
@@ -5828,7 +5833,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &597692590
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5980,10 +5985,11 @@ MonoBehaviour:
   - {fileID: 14800549}
   - {fileID: 1948981346}
   currentTarget: {fileID: 0}
-  beginDelay: 0
   movespeed: 0.25
   shouldMove: 1
+  animator: {fileID: 0}
   debugPathDraw: 0
+  waitingForTrafficLight: 0
 --- !u!95 &607399301
 Animator:
   serializedVersion: 3
@@ -6192,10 +6198,11 @@ MonoBehaviour:
   - {fileID: 851660364}
   - {fileID: 1406608349}
   currentTarget: {fileID: 0}
-  beginDelay: 0
   movespeed: 0.25
   shouldMove: 1
+  animator: {fileID: 0}
   debugPathDraw: 0
+  waitingForTrafficLight: 0
 --- !u!95 &611255487
 Animator:
   serializedVersion: 3
@@ -7170,10 +7177,11 @@ MonoBehaviour:
   - {fileID: 14800549}
   - {fileID: 1948981346}
   currentTarget: {fileID: 0}
-  beginDelay: 0
   movespeed: 0.25
   shouldMove: 1
+  animator: {fileID: 0}
   debugPathDraw: 0
+  waitingForTrafficLight: 0
 --- !u!95 &670608825
 Animator:
   serializedVersion: 3
@@ -7358,10 +7366,11 @@ MonoBehaviour:
   - {fileID: 599359112}
   - {fileID: 851660364}
   currentTarget: {fileID: 0}
-  beginDelay: 0
   movespeed: 0.25
   shouldMove: 1
+  animator: {fileID: 0}
   debugPathDraw: 0
+  waitingForTrafficLight: 0
 --- !u!95 &687023312
 Animator:
   serializedVersion: 3
@@ -9720,10 +9729,11 @@ MonoBehaviour:
   - {fileID: 14800549}
   - {fileID: 1948981346}
   currentTarget: {fileID: 0}
-  beginDelay: 0
   movespeed: 0.25
   shouldMove: 1
+  animator: {fileID: 0}
   debugPathDraw: 0
+  waitingForTrafficLight: 0
 --- !u!95 &990945718
 Animator:
   serializedVersion: 3
@@ -9839,10 +9849,11 @@ MonoBehaviour:
   - {fileID: 851660364}
   - {fileID: 1406608349}
   currentTarget: {fileID: 0}
-  beginDelay: 0
   movespeed: 0.25
   shouldMove: 1
+  animator: {fileID: 0}
   debugPathDraw: 0
+  waitingForTrafficLight: 0
 --- !u!95 &1003320932
 Animator:
   serializedVersion: 3
@@ -9931,10 +9942,11 @@ MonoBehaviour:
   - {fileID: 1313751278}
   - {fileID: 1204814414}
   currentTarget: {fileID: 0}
-  beginDelay: 0
   movespeed: 0.25
   shouldMove: 1
+  animator: {fileID: 0}
   debugPathDraw: 0
+  waitingForTrafficLight: 0
 --- !u!95 &1007929856
 Animator:
   serializedVersion: 3
@@ -10729,10 +10741,11 @@ MonoBehaviour:
   - {fileID: 851660364}
   - {fileID: 1406608349}
   currentTarget: {fileID: 0}
-  beginDelay: 0
   movespeed: 0.25
   shouldMove: 1
+  animator: {fileID: 0}
   debugPathDraw: 0
+  waitingForTrafficLight: 0
 --- !u!95 &1126845141
 Animator:
   serializedVersion: 3
@@ -11580,10 +11593,11 @@ MonoBehaviour:
   - {fileID: 465901782}
   - {fileID: 726084680}
   currentTarget: {fileID: 0}
-  beginDelay: 0
   movespeed: 0.25
   shouldMove: 1
+  animator: {fileID: 0}
   debugPathDraw: 0
+  waitingForTrafficLight: 0
 --- !u!65 &1259015386
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -13918,10 +13932,11 @@ MonoBehaviour:
   - {fileID: 373384168}
   - {fileID: 1301968147}
   currentTarget: {fileID: 0}
-  beginDelay: 0
   movespeed: 0.25
   shouldMove: 1
+  animator: {fileID: 0}
   debugPathDraw: 0
+  waitingForTrafficLight: 0
 --- !u!95 &1466137127
 Animator:
   serializedVersion: 3
@@ -14066,10 +14081,11 @@ MonoBehaviour:
   - {fileID: 373384168}
   - {fileID: 1301968147}
   currentTarget: {fileID: 0}
-  beginDelay: 0
   movespeed: 0.25
   shouldMove: 1
+  animator: {fileID: 0}
   debugPathDraw: 0
+  waitingForTrafficLight: 0
 --- !u!95 &1476725525
 Animator:
   serializedVersion: 3
@@ -14468,10 +14484,11 @@ MonoBehaviour:
   - {fileID: 851660364}
   - {fileID: 1406608349}
   currentTarget: {fileID: 0}
-  beginDelay: 0
   movespeed: 0.25
   shouldMove: 1
+  animator: {fileID: 0}
   debugPathDraw: 0
+  waitingForTrafficLight: 0
 --- !u!95 &1496143630
 Animator:
   serializedVersion: 3
@@ -14652,10 +14669,11 @@ MonoBehaviour:
   - {fileID: 1313751278}
   - {fileID: 1204814414}
   currentTarget: {fileID: 0}
-  beginDelay: 0
   movespeed: 0.25
   shouldMove: 1
+  animator: {fileID: 0}
   debugPathDraw: 0
+  waitingForTrafficLight: 0
 --- !u!95 &1514397335
 Animator:
   serializedVersion: 3
@@ -15905,10 +15923,11 @@ MonoBehaviour:
   - {fileID: 851660364}
   - {fileID: 1406608349}
   currentTarget: {fileID: 0}
-  beginDelay: 0
   movespeed: 0.25
   shouldMove: 1
+  animator: {fileID: 0}
   debugPathDraw: 0
+  waitingForTrafficLight: 0
 --- !u!95 &1662288621
 Animator:
   serializedVersion: 3
@@ -16439,10 +16458,11 @@ MonoBehaviour:
   - {fileID: 851660364}
   - {fileID: 1406608349}
   currentTarget: {fileID: 0}
-  beginDelay: 0
   movespeed: 0.25
   shouldMove: 1
+  animator: {fileID: 0}
   debugPathDraw: 0
+  waitingForTrafficLight: 0
 --- !u!95 &1724157040
 Animator:
   serializedVersion: 3
@@ -17228,10 +17248,11 @@ MonoBehaviour:
   - {fileID: 14800549}
   - {fileID: 1948981346}
   currentTarget: {fileID: 0}
-  beginDelay: 0
   movespeed: 0.25
   shouldMove: 1
+  animator: {fileID: 0}
   debugPathDraw: 0
+  waitingForTrafficLight: 0
 --- !u!95 &1790169887
 Animator:
   serializedVersion: 3
@@ -17346,10 +17367,11 @@ MonoBehaviour:
   - {fileID: 14800549}
   - {fileID: 1948981346}
   currentTarget: {fileID: 0}
-  beginDelay: 0
   movespeed: 0.25
   shouldMove: 1
+  animator: {fileID: 0}
   debugPathDraw: 0
+  waitingForTrafficLight: 0
 --- !u!95 &1793629153
 Animator:
   serializedVersion: 3

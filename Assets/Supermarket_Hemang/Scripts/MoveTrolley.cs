@@ -31,6 +31,7 @@ public class MoveTrolley : MonoBehaviour
     int salesManID;
     int unavailable = 0;
     Dictionary<string, string> markerMap = new Dictionary<string, string>();
+    SendMessage messageSender;
     // Start is called before the first frame update
     void Start()
     {
@@ -53,6 +54,7 @@ public class MoveTrolley : MonoBehaviour
         //getNearbyItems();
         //message = "Items bought: ";
         //Debug.Log("Total items = " + totalItems);
+        messageSender = (SendMessage)GameObject.Find("messageSender").GetComponent<SendMessage>();
     }
 
 
@@ -308,6 +310,7 @@ public class MoveTrolley : MonoBehaviour
         end = DateTime.Now;
         TimeSpan time = end - start;
         //Data to be sent to Python
+        messageSender.sendBytes("001", message + "\n" + unavailable + "\n" + time.TotalSeconds);
         Debug.Log(message);
         Debug.Log("Unavailable items: " + unavailable);
         Debug.Log("Time Spent in the market = " + time.TotalSeconds + " seconds.");
