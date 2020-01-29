@@ -32,7 +32,7 @@ public class NavMeshTry : MonoBehaviour
 
     string carID;
 
-    SendMessage messageSender;
+    //SendMessage messageSender;
 
     HashSet<GameObject> pedestrians;
 
@@ -52,7 +52,7 @@ public class NavMeshTry : MonoBehaviour
         else
             index = 0;
         agent.destination = wayPoints[index].position;
-        messageSender = (SendMessage)GameObject.Find("messageSender").GetComponent<SendMessage>();
+        //messageSender = (SendMessage)GameObject.Find("messageSender").GetComponent<SendMessage>();
     }
 
     private IEnumerator WaitForStopSign()
@@ -149,7 +149,7 @@ public class NavMeshTry : MonoBehaviour
                 string intersectionID = t.transform.parent.name.Substring(13);
                 string lightID = other.gameObject.name.Substring(12);
                 string result = carID + "#" + intersectionID + "#" + lightID + "#" + stopWatch.Elapsed.TotalMilliseconds.ToString();
-                messageSender.sendBytes("003", result);
+                //messageSender.sendBytes("003", result);
             }
         }
     }
