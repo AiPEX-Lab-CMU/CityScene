@@ -29,15 +29,16 @@ public class PersonPrimitiveAI : MonoBehaviour
             {
                 //there is a car in front of this person, now need to check distance
                 /* If the car is already waiting for the person then the person don't need to stop, just pass through quickly */
-                if (hit.distance < 1.0f && !hit.collider.gameObject.GetComponent<NavMeshTry>().InCarRange(this.gameObject))
-                {
+                if (hit.distance < 1.0f)
+                {   
+                    //Commented condition -> && !hit.collider.gameObject.GetComponent<NavMeshTry>().InCarRange(this.gameObject)
+
+
                     wm.shouldMove = false;
 
                     goto PointA;
 
                 }
-
-
 
             }
 
