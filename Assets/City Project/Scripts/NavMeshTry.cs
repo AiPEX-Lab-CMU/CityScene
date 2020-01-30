@@ -34,11 +34,8 @@ public class NavMeshTry : MonoBehaviour
 
     //SendMessage messageSender;
 
-    HashSet<GameObject> pedestrians;
-
     void Start()
     {
-        pedestrians = new HashSet<GameObject>();
         carID = gameObject.name.Substring(3);
         stopWatch = new Stopwatch();
         encounteredIntersection = null;
@@ -193,21 +190,9 @@ public class NavMeshTry : MonoBehaviour
         return agent.isStopped;
     }
 
-    public void AddPedestrian(GameObject gameobj)
+    public void CarStop()
     {
-        pedestrians.Add(gameobj);
         agent.isStopped = true;
-    }
-
-    public void RemovePedestrian(GameObject gameobj)
-    {
-        if(pedestrians.Contains(gameobj))
-            pedestrians.Remove(gameobj);
-    }
-
-    public bool InCarRange(GameObject gameobj)
-    {
-        return pedestrians.Contains(gameobj);
     }
 
     public void CarGo()

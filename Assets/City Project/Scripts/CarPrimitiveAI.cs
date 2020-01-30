@@ -27,8 +27,8 @@ public class CarPrimitiveAI : MonoBehaviour
         /* Register pedestrian encountered */
         if (other.gameObject.CompareTag("Person"))
         {
-            wm.AddPedestrian(other.gameObject);
             numberOfPeople++;
+            wm.CarStop();
         }
 
     }
@@ -38,7 +38,6 @@ public class CarPrimitiveAI : MonoBehaviour
         /* Deregister pedestrian */
         if (other.gameObject.CompareTag("Person"))
         {
-            wm.RemovePedestrian(other.gameObject);
             numberOfPeople--;
             if(numberOfPeople == 0)
                 wm.CarGo();
