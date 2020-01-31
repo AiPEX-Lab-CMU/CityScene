@@ -83,7 +83,7 @@ public class MarketItems : MonoBehaviour
         markerMap.Add("orange", "Marker1");
         markerMap.Add("potatoes", "Marker13");
         markerMap.Add("yogurt", "Marker4");
-        markerMap.Add("cheese", "Marker4");
+        markerMap.Add("Cheese", "Marker4");
         markerMap.Add("butter", "Marker5");
         markerMap.Add("beef", "Marker7");
         markerMap.Add("chicken", "Marker8");
@@ -91,11 +91,11 @@ public class MarketItems : MonoBehaviour
         markerMap.Add("garlic", "Marker12");
         markerMap.Add("pepper_green", "Marker12");
         markerMap.Add("papertowels", "Marker19");
-        markerMap.Add("bread", "Marker29");
+        markerMap.Add("bread_", "Marker29");
         markerMap.Add("milk", "Marker31");
         markerMap.Add("cola", "Marker35");
         markerMap.Add("beer", "Marker35");
-        markerMap.Add("wine", "Marker37");
+        markerMap.Add("wvine", "Marker37");
     }
 
     public Dictionary<string, string> getMarkerMap()
