@@ -131,7 +131,7 @@ public class MarketItems : MonoBehaviour
         return null;
     }
 
-    void writeDetails()
+    public void writeDetails()
     {
         GameObject mainObj = GameObject.Find("shelves");
         Transform[] childTransforms = mainObj.GetComponentsInChildren<Transform>();
