@@ -228,6 +228,7 @@ public class MoveTrolley : MonoBehaviour
         itemsPicked = totalItems;
         checkShoppingComplete();
         //message to python
+        messageSender.sendBytes("001", "Frustrated customer left due to shopping for too long.");
         Debug.Log("Frustrated customer left due to shopping for too long.");
     }
 

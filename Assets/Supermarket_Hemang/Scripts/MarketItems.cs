@@ -75,7 +75,6 @@ public class MarketItems : MonoBehaviour
         loadMarkerMap();
         getDetails();
         //printDetails();
-        
     }
 
     void loadMarkerMap()

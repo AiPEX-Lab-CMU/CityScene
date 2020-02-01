@@ -42,7 +42,7 @@ public class SceneNavigation : MonoBehaviour
             //supermarket was loaded, hence disable the supermarket button and activate the city button
 
             supermarketSceneButton.SetActive(false);
-            citySceneButton.SetActive(true);
+            //citySceneButton.SetActive(true);
 
             citySceneBackground.SetActive(false);
             supermarketBackground.SetActive(false);
