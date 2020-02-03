@@ -13,7 +13,7 @@ public class customerHandler : MonoBehaviour
     public GameObject customer6;
     public GameObject customer7;
     GameObject[] customers = new GameObject[7];
-    GameObject[] players = new GameObject[20];
+    GameObject[] players = new GameObject[50];
     int playerCount;
     int minWaitTime = 10;
     int maxWaitTime = 20;
@@ -21,7 +21,7 @@ public class customerHandler : MonoBehaviour
     void Start()
     {
         // set a different timeScale;
-        Time.timeScale = 5;
+        Time.timeScale = 3;
         customers[0] = customer1;
         customers[1] = customer2;
         customers[2] = customer3;
@@ -31,7 +31,7 @@ public class customerHandler : MonoBehaviour
         customers[6] = customer7;
         System.Random random = new System.Random();
         GameObject market = GameObject.Find("Green_Market");
-        for(int i=0; i<20; i++)
+        for(int i=0; i<50; i++)
         {
             int index = random.Next(7);
             players[i] = Instantiate(customers[index]);
@@ -83,7 +83,7 @@ public class customerHandler : MonoBehaviour
     IEnumerator startController()
     {
         System.Random random = new System.Random();
-        for(int i=0; i<20; i++)
+        for(int i=0; i<50; i++)
         {
             //int index = random.Next(7);
             //GameObject market = GameObject.Find("Green_Market");

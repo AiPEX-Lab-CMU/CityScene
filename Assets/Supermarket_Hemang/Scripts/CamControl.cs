@@ -5,7 +5,7 @@ using UnityEngine;
 public class CamControl : MonoBehaviour
 {
     Coroutine co;
-    int timeInterval = 5;
+    int timeInterval = 30;
     int camCount = 1;
     bool playerMode = true;
     // Start is called before the first frame update
