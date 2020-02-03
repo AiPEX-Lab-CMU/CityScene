@@ -20,6 +20,8 @@ public class customerHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // set a different timeScale;
+        Time.timeScale = 5;
         customers[0] = customer1;
         customers[1] = customer2;
         customers[2] = customer3;
@@ -96,7 +98,16 @@ public class customerHandler : MonoBehaviour
                 wait = random.Next(maxWaitTime);
             } while (wait < minWaitTime);
             Debug.Log("Next customer in " + wait + " seconds.");
-            yield return new WaitForSecondsRealtime(wait);
+            if (Time.timeScale == 1)
+            {
+                yield return new WaitForSecondsRealtime(wait);
+            }
+            else
+            {
+                //because timeScale changes. 
+                //need to set WaitForSeconds instead of WaitForSecondsRealtime.
+                yield return new WaitForSeconds(wait);
+            }
         }
     }
 

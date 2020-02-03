@@ -348,6 +348,19 @@ public class MoveTrolley : MonoBehaviour
         Debug.Log(message);
         Debug.Log(unavailable);
         Debug.Log("Time Spent in the market = " + time.TotalSeconds + " seconds.");
+        if (Time.timeScale == 5)
+        {
+            Debug.Log("change timeScale to 5");
+            Debug.Log("Time Spent in the market = " + time.TotalSeconds * 5 + " seconds.");
+        }
+        else if (Time.timeScale == 1)
+        {
+            Debug.Log("Time Spent in the market = " + time.TotalSeconds + " seconds.");
+        }
+        else
+        {
+            Debug.Log("different timeScale...");
+        }
     }
 
     //write a function to send checkout message 
