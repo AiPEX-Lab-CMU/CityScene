@@ -166,24 +166,24 @@ public class MoveTrolley : MonoBehaviour
         while (!isComplete)
         {
             yield return new WaitForSeconds(waitTime);
-            if (!isComplete /*&& markerCount<38*/ && isMoving)
+            if (!isComplete && markerCount<38 && isMoving)
             {
                 // get player's next marker
-                nextMarker = "Marker" + (markerCount);
+                String nextMk = "Marker" + (markerCount + 1);
                 // find items near next marker (use the markerMap variable)
-                int x = mi.markerItems[nextMarker].Count;
+                int x = mi.markerItems[nextMk].Count;
                 int ind = rand.Next(x);
-                String randomItem = mi.markerItems[nextMarker][ind];
+                String randomItem = mi.markerItems[nextMk][ind];
                 if (!randomItem.ToLower().Contains("food"))
                 {
-                    if (!markerItems.ContainsKey(nextMarker))
+                    if (!markerItems.ContainsKey(nextMk))
                     {
                         List<string> temp = new List<string>();
-                        markerItems.Add(nextMarker, temp);
+                        markerItems.Add(nextMk, temp);
                     }
-                    markerItems[nextMarker].Add(mi.markerItems[nextMarker][ind]);
+                    markerItems[nextMk].Add(mi.markerItems[nextMk][ind]);
                     totalItems++;
-                    Debug.Log("Added item " + mi.markerItems[nextMarker][ind] + " to the list of " + transform.name);
+                    Debug.Log("Added item " + mi.markerItems[nextMk][ind] + " to the list of " + transform.name);
                 }
                 //foreach (KeyValuePair<string, string> entry in markerMap)
                 //{
