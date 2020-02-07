@@ -21,7 +21,7 @@ public class customerHandler : MonoBehaviour
     void Start()
     {
         // set a different timeScale;
-        Time.timeScale = 3;
+        Time.timeScale = 5;
         customers[0] = customer1;
         customers[1] = customer2;
         customers[2] = customer3;
