@@ -15,8 +15,8 @@ public class customerHandler : MonoBehaviour
     GameObject[] customers = new GameObject[7];
     GameObject[] players = new GameObject[50];
     int playerCount;
-    int minWaitTime = 10;
-    int maxWaitTime = 20;
+    int minWaitTime = 20;
+    int maxWaitTime = 40;
     // Start is called before the first frame update
     void Start()
     {

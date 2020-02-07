@@ -176,13 +176,14 @@ public class MoveTrolley : MonoBehaviour
                 String randomItem = mi.markerItems[nextMk][ind];
                 if (!randomItem.ToLower().Contains("food"))
                 {
-                    if (!markerItems.ContainsKey(nextMk))
-                    {
-                        List<string> temp = new List<string>();
-                        markerItems.Add(nextMk, temp);
-                    }
-                    markerItems[nextMk].Add(mi.markerItems[nextMk][ind]);
-                    totalItems++;
+                    //if (!markerItems.ContainsKey(nextMk))
+                    //{
+                    //    List<string> temp = new List<string>();
+                    //    markerItems.Add(nextMk, temp);
+                    //}
+                    //markerItems[nextMk].Add(mi.markerItems[nextMk][ind]);
+                    //totalItems++;
+                    message = message + "\t" + randomItem;
                     Debug.Log("Added item " + mi.markerItems[nextMk][ind] + " to the list of " + transform.name);
                 }
                 //foreach (KeyValuePair<string, string> entry in markerMap)
@@ -348,10 +349,10 @@ public class MoveTrolley : MonoBehaviour
         Debug.Log(message);
         Debug.Log(unavailable);
         Debug.Log("Time Spent in the market = " + time.TotalSeconds + " seconds.");
-        if (Time.timeScale == 3)
+        if (Time.timeScale == 5)
         {
-            Debug.Log("change timeScale to 3");
-            Debug.Log("Time Spent in the market = " + time.TotalSeconds * 3 + " seconds.");
+            Debug.Log("change timeScale to 5");
+            Debug.Log("Time Spent in the market = " + time.TotalSeconds * 5 + " seconds.");
         }
         else if (Time.timeScale == 1)
         {
