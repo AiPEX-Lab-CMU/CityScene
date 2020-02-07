@@ -20,8 +20,8 @@ public class customerHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // set a different timeScale;
-        Time.timeScale = 5;
+        // set to the original timeScale;
+        Time.timeScale = 1;
         customers[0] = customer1;
         customers[1] = customer2;
         customers[2] = customer3;
