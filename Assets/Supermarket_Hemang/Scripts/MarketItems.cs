@@ -142,7 +142,7 @@ public class MarketItems : MonoBehaviour
                 data.Add(getChildDetails(t));
             }
         }
-        using (StreamWriter fin = new StreamWriter(@"Assets/Supermarket_Hemang/Scripts/shelfData.txt"))
+        using (StreamWriter fin = new StreamWriter(@"shelfData.txt"))
         {
             foreach(string d in data)
             {
@@ -153,7 +153,7 @@ public class MarketItems : MonoBehaviour
 
     void generateShelfMap()
     {
-        using (var reader = new StreamReader(@"Assets/Supermarket_Hemang/Scripts/shelfData.txt"))
+        using (var reader = new StreamReader(@"shelfData.txt"))
         {
             while(!reader.EndOfStream)
             {
@@ -350,7 +350,7 @@ public class MarketItems : MonoBehaviour
 
     void getDetails()
     {
-        using (var reader = new StreamReader(@"Assets/Supermarket_Hemang/Scripts/shelfData.txt"))
+        using (var reader = new StreamReader(@"shelfData.txt"))
         {
             shelves = new Dictionary<string, Shelf>();
             while(!reader.EndOfStream)
