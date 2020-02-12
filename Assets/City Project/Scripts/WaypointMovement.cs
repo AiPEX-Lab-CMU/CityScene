@@ -21,7 +21,7 @@ public class WaypointMovement : MonoBehaviour
 
     public bool shouldMove = true;
 
-    public bool isStanding = false;
+
 
     public bool shouldStartMove = false;
 
@@ -36,6 +36,12 @@ public class WaypointMovement : MonoBehaviour
     public bool waitingForTrafficLight;
 
     AnimationStateController animState;
+
+
+    //Bool used for people who are standing in a group at the start
+    public bool isStanding = false;
+    [SerializeField] Transform standPoint;
+    [SerializeField] Transform groupCentre;
 
     // Start is called before the first frame update
     void Start()
@@ -68,6 +74,17 @@ public class WaypointMovement : MonoBehaviour
         if (thisType == TypeOfObject.Person)
             animState = this.gameObject.GetComponent<AnimationStateController>();
 
+
+        //Setting shouldStartMove = false for those people who need to be standing at the start
+        if (thisType == TypeOfObject.Person && isStanding)
+        {
+            shouldStartMove = false;
+
+            wayPoints.Add(standPoint);
+
+        }
+
+        //Using invoke to implement the start move delay
         Invoke("StartMove", beginDelay);
 
     }
@@ -98,14 +115,26 @@ public class WaypointMovement : MonoBehaviour
         if (Vector3.Distance(this.transform.position, currentTarget.position) < 0.1f)
         {
 
-                //The waypoint needs to change once the target reaches the current waypoint it was going towards
-                waypointCounter++;
+            if(currentTarget == standPoint)
+            { //this will be true when the person finishes a cycle of the waypoints and comes back
+                //At this point the person should 'rejoin the group' i.e (stop moving and face the direction of group centre
 
-                if (waypointCounter > wayPoints.Count - 1)
-                    waypointCounter = 0;
+                shouldStartMove = false;
 
-                currentTarget = wayPoints[waypointCounter];
-            
+                this.transform.LookAt(groupCentre);
+
+                //restart the entire cycle
+                Invoke("StartMove", beginDelay);
+            }
+
+            //The waypoint needs to change once the target reaches the current waypoint it was going towards
+            waypointCounter++;
+
+            if (waypointCounter > wayPoints.Count - 1)
+                waypointCounter = 0;
+
+            currentTarget = wayPoints[waypointCounter];
+
         } else
         {
 
@@ -119,7 +148,7 @@ public class WaypointMovement : MonoBehaviour
     void MoveMe()
     {
 
-        if (!shouldMove || isStanding || !shouldStartMove)
+        if (!shouldMove || !shouldStartMove)
             return;
 
         this.transform.LookAt(currentTarget);
