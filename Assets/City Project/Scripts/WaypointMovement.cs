@@ -21,13 +21,11 @@ public class WaypointMovement : MonoBehaviour
 
     public bool shouldMove = true;
 
-
-
     public bool shouldStartMove = false;
 
     [SerializeField] float beginDelay;
 
-    [SerializeField] Animator animator;
+    Animator animator;
     [SerializeField] bool debugPathDraw;
 
     LineRenderer lineDraw;
@@ -37,11 +35,14 @@ public class WaypointMovement : MonoBehaviour
 
     AnimationStateController animState;
 
-
+    //Variables for switcing to walk and stand states for people who start in groups
     //Bool used for people who are standing in a group at the start
     public bool isStanding = false;
     [SerializeField] Transform standPoint;
     [SerializeField] Transform groupCentre;
+    [SerializeField] string standingPathID;
+    public delegate void WalkComplete(WaypointMovement wm);
+    public event WalkComplete onWalkComplete;
 
     // Start is called before the first frame update
     void Start()
@@ -84,8 +85,9 @@ public class WaypointMovement : MonoBehaviour
 
         }
 
-        //Using invoke to implement the start move delay
-        Invoke("StartMove", beginDelay);
+        //Using invoke to implement the start move delay. Not including people with isstanding because these people's walk is controlled by stand group controller
+        if(!isStanding)
+            Invoke("StartMove", beginDelay);
 
     }
 
@@ -96,14 +98,13 @@ public class WaypointMovement : MonoBehaviour
         if(thisType == TypeOfObject.Person)
         {
 
-            if (shouldMove && !isStanding)
+            if (shouldMove && shouldStartMove)
             {
 
                 animState.animationState = AnimationStateController.HumanoidStates.Walk;
 
             }
-
-            if(!shouldMove || isStanding)
+            else
             {
 
                 animState.animationState = AnimationStateController.HumanoidStates.Idle;
@@ -112,36 +113,38 @@ public class WaypointMovement : MonoBehaviour
 
         }
 
-        if (Vector3.Distance(this.transform.position, currentTarget.position) < 0.1f)
+        if (currentTarget != null)
         {
+            if (Vector3.Distance(this.transform.position, currentTarget.position) < 0.02f)
+            {
 
-            if(currentTarget == standPoint)
-            { //this will be true when the person finishes a cycle of the waypoints and comes back
-                //At this point the person should 'rejoin the group' i.e (stop moving and face the direction of group centre
+                if (isStanding && currentTarget == standPoint)
+                { //this will be true when the person finishes a cycle of the waypoints and comes back
+                  //At this point the person should 'rejoin the group' i.e (stop moving and face the direction of group centre
+                    shouldStartMove = false;
 
-                shouldStartMove = false;
+                    //Fire the event to broadcast that my movement is over. Passing this to help identify the event owner
+                    onWalkComplete?.Invoke(this);
 
-                this.transform.LookAt(groupCentre);
+                    this.transform.LookAt(groupCentre);
+                }
 
-                //restart the entire cycle
-                Invoke("StartMove", beginDelay);
+                //The waypoint needs to change once the target reaches the current waypoint it was going towards
+                waypointCounter++;
+
+                if (waypointCounter > wayPoints.Count - 1)
+                    waypointCounter = 0;
+
+                currentTarget = wayPoints[waypointCounter];
+
             }
+            else
+            {
 
-            //The waypoint needs to change once the target reaches the current waypoint it was going towards
-            waypointCounter++;
+                MoveMe();
 
-            if (waypointCounter > wayPoints.Count - 1)
-                waypointCounter = 0;
-
-            currentTarget = wayPoints[waypointCounter];
-
-        } else
-        {
-
-            MoveMe();
-
+            }
         }
-
 
     }
 
@@ -174,7 +177,7 @@ public class WaypointMovement : MonoBehaviour
 
     }
 
-    void StartMove()
+    public void StartMove()
     {
 
         shouldStartMove = true;

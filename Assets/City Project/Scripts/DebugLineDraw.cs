@@ -44,8 +44,8 @@ public class DebugLineDraw : MonoBehaviour
         lineRend.positionCount = wayPoints.Count;
         for (int i = 0; i < wayPoints.Count; i++)
         {
-
-            lineRend.SetPosition(i, wayPoints[i].position);
+            //add positions to line renderer but raise them a little so that the line renderer is not blocked by mesh at y=0
+            lineRend.SetPosition(i, wayPoints[i].position + new Vector3(0, 0.1f, 0));
 
         }
 
