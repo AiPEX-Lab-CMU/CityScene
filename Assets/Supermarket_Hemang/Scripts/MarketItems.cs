@@ -1,22 +1,40 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
 public class MarketItems : MonoBehaviour
 {
+    // holds the list of items which have to be swapped
     public List<string> swapList1 = new List<string>();
     public List<string> swapList2 = new List<string>();
+
+    // holds the list of items whose positions have been changed
     public List<string> changedItems = new List<string>();
+
+    // list of all items in the supermarket
     public List<string> itemList = new List<string>();
+
+    // Holds all the game objects of a particular item
     public Dictionary<string, List<GameObject>> map = new Dictionary<string, List<GameObject>>();
+
+    // List of shelves and their names
     Dictionary<string, Shelf> shelves;
     Dictionary<string, ShelfSpace> shelfSpaces = new Dictionary<string, ShelfSpace>();
+
+    // mapping all the items in the list (not the market) to its nearest marker
     Dictionary<string, string> markerMap = new Dictionary<string, string>();
+
+    // maps all the items in the market to its nearest markers
     public Dictionary<string, List<string>> markerItems = new Dictionary<string, List<string>>();
     // Start is called before the first frame update
+    // adding necessary physics to the objects, and populating the above variables
     void Start()
     {
+        if (File.Exists(@"shelfData.txt"))
+            changeLocation();
+        else
+            writeDetails();
         GameObject child = GameObject.Find("shelves");
         Transform[] markerList = GameObject.Find("MovementMarkers").GetComponentsInChildren<Transform>();
         foreach (Transform tf in child.GetComponentsInChildren<Transform>())
@@ -24,17 +42,11 @@ public class MarketItems : MonoBehaviour
             string thisItem = tf.gameObject.name;
             if(thisItem.ToLower().Contains("product") && !thisItem.Contains("LOD"))
             {
-                //if (thisItem.ToLower().Contains("mayo"))
-                //{
-                    Rigidbody rb = tf.gameObject.AddComponent<Rigidbody>();
-                    rb.useGravity = false;
-                //BoxCollider bc = tf.gameObject.AddComponent<BoxCollider>();
-                //bc.size = new Vector3(0.1f, 0.1f, 0.1f);
-                //bc.isTrigger = true;
-                    SphereCollider sc = tf.gameObject.AddComponent<SphereCollider>();
+                Rigidbody rb = tf.gameObject.AddComponent<Rigidbody>();
+                rb.useGravity = false;
+                SphereCollider sc = tf.gameObject.AddComponent<SphereCollider>();
                 sc.radius = 0.1f;
                 sc.isTrigger = true;
-                //}
                 string tmp = thisItem.Substring(thisItem.IndexOf('_')+1);
                 int index = tmp.IndexOfAny(new char[]{'0','1','2','3','4','5','6','7','8','9',' '});
                 string product;
@@ -71,12 +83,71 @@ public class MarketItems : MonoBehaviour
                 }
             }
         }
-        //writeDetails();
         loadMarkerMap();
+        reloadMarkerMap();
         getDetails();
-        //printDetails();
     }
 
+    /* Change location of products only, suppose that crates and shelves are never moved */
+    void changeLocation()
+    {
+        Dictionary<string, List<Transform>> locations = new Dictionary<string, List<Transform>>();
+        GameObject child = GameObject.Find("shelves");
+        foreach (Transform tf in child.GetComponentsInChildren<Transform>())
+        {
+            string thisItem = tf.gameObject.name;
+            if (thisItem.ToLower().Contains("product") && !thisItem.Contains("LOD"))
+            {
+                if (!locations.ContainsKey(thisItem))
+                {
+                    List<Transform> temp = new List<Transform>();
+                    locations.Add(thisItem, temp);
+                }
+                locations[thisItem].Add(tf);
+            }
+        }
+        using (var reader = new StreamReader(@"shelfData.txt"))
+        {
+            while(!reader.EndOfStream)
+            {
+                string line = reader.ReadLine();
+                string[] parts = line.Split(';');
+                string shelfName = parts[0].Split(':')[0];
+                Transform parent = GameObject.Find(shelfName).transform;
+                //No crates
+                if(parts.Length == 2)
+                {
+                    string[] parsed = parts[1].Split(':');
+                    string[] coordinates = parsed[1].Split(',');
+                    Transform product = locations[parsed[0]][0];
+                    product.SetParent(parent);
+                    float x = float.Parse(coordinates[0], System.Globalization.CultureInfo.InvariantCulture);
+                    float y = float.Parse(coordinates[1], System.Globalization.CultureInfo.InvariantCulture);
+                    float z = float.Parse(coordinates[2], System.Globalization.CultureInfo.InvariantCulture);
+                    product.position = new Vector3(x, y, z);
+                    locations[parsed[0]].Remove(product);
+                }
+                else
+                {
+                    string[] parsedCrates = parts[1].Split(':');
+                    string[] parsedProducts = parts[2].Split(':');
+                    string[] crateCoordicates = parsedCrates[1].Split(',');
+                    string[] productCoordinates = parsedProducts[1].Split(',');
+                    Transform crate = GameObject.Find(parsedCrates[0]).transform;
+                    Transform product = locations[parsedProducts[0]][0];
+                    product.SetParent(crate);
+                    float x = float.Parse(productCoordinates[0], System.Globalization.CultureInfo.InvariantCulture);
+                    float y = float.Parse(productCoordinates[1], System.Globalization.CultureInfo.InvariantCulture);
+                    float z = float.Parse(productCoordinates[2], System.Globalization.CultureInfo.InvariantCulture);
+                    product.position = new Vector3(x, y, z);
+                    locations[parsedProducts[0]].Remove(product);
+                }
+            }
+        }
+        locations.Clear();
+    }
+
+    // populates the markerMap
     void loadMarkerMap()
     {
         markerMap.Add("orange", "Marker1");
@@ -97,11 +168,30 @@ public class MarketItems : MonoBehaviour
         markerMap.Add("wvine", "Marker37");
     }
 
+    void reloadMarkerMap()
+    {
+        Transform[] markerList = GameObject.Find("MovementMarkers").GetComponentsInChildren<Transform>();
+        foreach (var entry in map)
+        {
+            foreach (Transform t in markerList)
+            {
+                if (Vector3.Distance(entry.Value[0].transform.position, t.position) < 3)
+                {
+                    string s = entry.Key;
+                    markerMap[s] = t.name;
+                    Debug.Log(s + ":" + markerMap[s]);
+                    break;
+                }
+            }
+        }
+    }
+
     public Dictionary<string, string> getMarkerMap()
     {
         return markerMap;
     }
 
+    // updates the markerMap for items whose positions have been changed (changedItems)
     public void updateMarkerMap()
     {
         Transform[] markerList = GameObject.Find("MovementMarkers").GetComponentsInChildren<Transform>();
@@ -119,7 +209,7 @@ public class MarketItems : MonoBehaviour
         }
     }
 
-
+    // search the product name based on the gameObject
     public string searchProduct(GameObject obj)
     {
         foreach(KeyValuePair<string, List<GameObject>> pair in map)
@@ -130,6 +220,7 @@ public class MarketItems : MonoBehaviour
         return null;
     }
 
+    // write position and parent details of each item in the supermarket to shelfData.txt
     public void writeDetails()
     {
         GameObject mainObj = GameObject.Find("shelves");
@@ -151,6 +242,7 @@ public class MarketItems : MonoBehaviour
         }
     }
 
+    //Load the shelfMap based on positions in shelfData.txt
     void generateShelfMap()
     {
         using (var reader = new StreamReader(@"shelfData.txt"))
@@ -172,9 +264,9 @@ public class MarketItems : MonoBehaviour
         }
     }
 
+    // print details of the supermarket
     void printDetails()
     {
-        //int i = 1;
         foreach(KeyValuePair<string,Shelf> s in shelves)
         {
             Debug.Log(s.Value.getName() + ": position - " + s.Value.position);
@@ -184,7 +276,6 @@ public class MarketItems : MonoBehaviour
                 Debug.Log("\t Has container : " + item.Value.hasBox);
                 if(item.Value.hasBox)
                 {
-                    //Debug.Log("\t Container name: " + item.Value.container.getName() + " : position = " + item.Value.container.position);
                     foreach(KeyValuePair<string,Box> box in item.Value.containers)
                     {
                         Debug.Log("\t Container name: " + box.Key + " : position - " + box.Value.position);
@@ -198,6 +289,7 @@ public class MarketItems : MonoBehaviour
         }
     }
 
+    // adds the object which was clicked on to the list
     public void addToList(GameObject obj)
     {
         string item = searchProduct(obj);
@@ -233,6 +325,8 @@ public class MarketItems : MonoBehaviour
         }
     }
 
+    // swaps the items in the swap lists, gets all the gameobjects in to and from lists
+    // swaps the positions and parents of corresponding items. Excess items are discarded
     public void swap()
     {
         List<GameObject> from = new List<GameObject>();
@@ -272,11 +366,13 @@ public class MarketItems : MonoBehaviour
             from[i].transform.parent = parent1;
             to[i].transform.parent = parent2;
         }
-
+        writeDetails();
     }
 
+    // old method to swap individual items and not lists of items
     public void swapItems(string toItem, string fromItem)
     {
+        Debug.Log("swapItems called");
         if (!toItem.Equals(fromItem))
         {
             Item to = new Item("none");
@@ -305,18 +401,12 @@ public class MarketItems : MonoBehaviour
             Debug.Log(minCount);
             for(int i=0; i<minCount;i++)
             {
-                //GameObject toObj = findItemByPosition(to.objectNames[i], to.positions[i]);
-                //GameObject fromObj = findItemByPosition(from.objectNames[i], from.positions[i]);
                 GameObject toObj = findItemByParent(to.objectNames[i], to.parentName[i]);
                 GameObject fromObj = findItemByParent(from.objectNames[i], from.parentName[i]);
                 Debug.Log(toObj.name + "-" + fromObj.name);
                 Vector3 temp = toObj.transform.position;
                 toObj.transform.position = fromObj.transform.position;
                 fromObj.transform.position = temp;
-                //Debug.Log(from.positions[i]);
-                //toObj.transform.position.Set(from.positions[i].x, from.positions[i].y, from.positions[i].z);
-                //toObj.transform.position = from.positions[i];
-                //fromObj.transform.position = to.positions[i];
                 toObj.transform.SetParent(GameObject.Find(from.parentName[i]).transform);
                 fromObj.transform.SetParent(GameObject.Find(to.parentName[i]).transform);
             }
@@ -325,6 +415,7 @@ public class MarketItems : MonoBehaviour
         }
     }
 
+    // gets an item based by matching name and parent object name
     GameObject findItemByParent(string objName, string parentName)
     {
         GameObject parent = GameObject.Find(parentName);
@@ -333,6 +424,7 @@ public class MarketItems : MonoBehaviour
         return null;
     }
 
+    // gets an item based on the object name and position
     GameObject findItemByPosition(string objName, Vector3 position)
     {
         GameObject shelf = GameObject.Find("shelves");
@@ -348,6 +440,13 @@ public class MarketItems : MonoBehaviour
         return null;
     }
 
+    // load the shelves dictionary, boxes and items for every line in shelfData.txt
+    // some items are placed inside a box while some are direclty placed on the
+    // shelf. Splitting the line based on ';'. If splits into 3, that means that
+    // the items are placed inside boxes. For example, Onions are placed inside a
+    // container which is placed in a shelf. If splits into 2, it means that the item
+    // is placed directly on the shelf. Shelf, Boxes and Items together form the data
+    // structure which represents the supermarket.
     void getDetails()
     {
         using (var reader = new StreamReader(@"shelfData.txt"))
@@ -432,6 +531,7 @@ public class MarketItems : MonoBehaviour
         }
     }
 
+    // String manipulation to get the item name from the name of its gameobject
     string getName(string thisItem)
     {
         string tmp = thisItem.Substring(thisItem.IndexOf('_') + 1);
@@ -444,6 +544,7 @@ public class MarketItems : MonoBehaviour
         return product;
     }
 
+    // Function to print a gameobject's heirarchy details, i.e shelf details;box details;item details
     string getChildDetails(Transform tf)
     {
         string data = tf.gameObject.name + ":" + tf.position.x + "," + tf.position.y + "," + tf.position.z;
