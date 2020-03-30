@@ -17,6 +17,7 @@ public class screenshotScript : MonoBehaviour
         cam = GameObject.Find("screenshotCam").GetComponent<Camera>();
     }
 
+
     public void takeScreenShot()
     {
         cam.enabled = true;

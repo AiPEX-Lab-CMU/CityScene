@@ -23,7 +23,7 @@ public class MarketItems : MonoBehaviour
     Dictionary<string, ShelfSpace> shelfSpaces = new Dictionary<string, ShelfSpace>();
 
     // mapping all the items in the list (not the market) to its nearest marker
-    Dictionary<string, string> markerMap = new Dictionary<string, string>();
+    public Dictionary<string, string> markerMap = new Dictionary<string, string>();
 
     // maps all the items in the market to its nearest markers
     public Dictionary<string, List<string>> markerItems = new Dictionary<string, List<string>>();
