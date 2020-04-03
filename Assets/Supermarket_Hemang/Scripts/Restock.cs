@@ -16,6 +16,7 @@ public class Restock : MonoBehaviour
     bool isMoving = false;
     bool pictured = false;
     int count = 0;
+    int checkedOutCustomers = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,7 +24,6 @@ public class Restock : MonoBehaviour
         cam = gameObject.transform.GetChild(0).GetComponent<Camera>();
         cam.enabled = false;
         messageSender = (SendMessage)GameObject.Find("messageSender").GetComponent<SendMessage>();
-        snapshotLocations = new Dictionary<string, List<Snapshot>>();
         generateSnapshotLocations();
     }
 
@@ -42,6 +42,7 @@ public class Restock : MonoBehaviour
     /* This function should be called when going to deploy the robot */
     public void generateSnapshotLocations()
     {
+        snapshotLocations = new Dictionary<string, List<Snapshot>>();
         MarketItems market = GameObject.Find("Green_Market").GetComponent<MarketItems>();
         List<string> itemsNeeded = new List<string>();
         itemsNeeded.Add("orange");
@@ -77,7 +78,7 @@ public class Restock : MonoBehaviour
                     randomPickedOnes.Add(singleItem);
             }
             int rndIdx = Random.Range(0, randomPickedOnes.Count - 1);
-            Snapshot snap = new Snapshot(distance, randomPickedOnes[rndIdx]);
+            Snapshot snap = new Snapshot(distance, randomPickedOnes[rndIdx].transform.position);
             if(!snapshotLocations.ContainsKey(marker))
             {
                 List<Snapshot> snapshots = new List<Snapshot>();
@@ -88,6 +89,13 @@ public class Restock : MonoBehaviour
         isMoving = false;
     }
 
+    public void customerCheckout()
+    {
+        checkedOutCustomers++;
+        if(checkedOutCustomers == 50)
+            resetPosition();
+    }
+
     public void setIsMoving(bool moving)
     {
         Debug.Log("Called is moving");
@@ -95,10 +103,10 @@ public class Restock : MonoBehaviour
     }
 
     /* Zooms in or out at a random coefficient and focuses on the object and takes a snapshot */
-    private void takeSnapshot(GameObject product)
+    private void takeSnapshot(Vector3 product)
     {
         /* Focus on the product */
-        cam.transform.LookAt(product.transform);
+        cam.transform.LookAt(product);
         cam.enabled = true;
         float zoomDistance = Random.Range(-15.0f, 15.0f);
         cam.fieldOfView += zoomDistance;
@@ -114,10 +122,12 @@ public class Restock : MonoBehaviour
         RenderTexture.active = null;
         Destroy(rt);
         byte[] bytes = screen.EncodeToJPG();
-        //messageSender.sendBytesInMemory("000", bytes);
+        messageSender.sendBytesInMemory("000", bytes);
         //call sendToPython function
+        /*
         string filename = string.Format("{0}/screen" + count + ".jpg", Application.dataPath);
         System.IO.File.WriteAllBytes(filename, bytes);
+        */
         cam.fieldOfView -= zoomDistance;
         count++;
         cam.enabled = false;
@@ -133,20 +143,39 @@ public class Restock : MonoBehaviour
             for (int i = snapshots.Count - 1; i >= 0; i--)
             {
                 float targetDistance = (markerVal < nextMarkerVal) ? snapshots[i].distance : -snapshots[i].distance;
-                if(targetDistance >= 0.0f && targetDistance - 0.1f <= actualDistance && actualDistance<= targetDistance + 0.1f)
+                if(targetDistance >= 0.0f && targetDistance - 0.2f <= actualDistance && actualDistance<= targetDistance + 0.2f && snapshots[i].visited == false)
                 {
                     takeSnapshot(snapshots[i].center);
-                    snapshots.RemoveAt(i);
+                    snapshots[i].visited = true;
                 }
             }
         }
+    }
+
+    public void resetPosition()
+    {
+        isMoving = true;
+        nextMarkerVal = 0;
+        gameObject.transform.position = new Vector3(-32.61f, 0.265f, -7.769f);
+        foreach(KeyValuePair<string, List<Snapshot>> snapshotLocEntry in snapshotLocations)
+        {
+            foreach(Snapshot singleSnapshot in snapshotLocEntry.Value)
+            {
+                singleSnapshot.visited = false;
+            }
+        }
+        gameObject.SetActive(true);
+        isMoving = false;
     }
 
     //Update is called once per frame
     void Update()
     {
         if (nextMarkerVal > 39)
+        {
+            gameObject.transform.position = new Vector3(-100.0f, -100.0f, -100.0f);
             return;
+        }
         GameObject nextMarker = GameObject.Find("Marker" + nextMarkerVal);
         Debug.Log("Look at Marker" + nextMarkerVal + " with distance of" + Vector3.Distance(gameObject.transform.position, nextMarker.transform.position));
         if (!isMoving)
@@ -157,8 +186,12 @@ public class Restock : MonoBehaviour
         Character character = gameObject.GetComponent<Character>();
         character.characterLocomotion.runSpeed = 0.0f;
         /* Take pictures for possible locations between the previous marker and the nextmarker) */
+        if (nextMarkerVal >= 2)
+            takePicturesForMarker(nextMarkerVal - 2);
         takePicturesForMarker(nextMarkerVal - 1);
         takePicturesForMarker(nextMarkerVal);
+        if (nextMarkerVal < 39)
+            takePicturesForMarker(nextMarkerVal + 1);
         character.characterLocomotion.runSpeed = moveSpeed;
     }
 }

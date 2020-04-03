@@ -5,7 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/City Project/Scenes/Scene - People and Visuals.unity
     guid: e9b971bb4afb5814896b0dc4f9881b52
   - enabled: 1

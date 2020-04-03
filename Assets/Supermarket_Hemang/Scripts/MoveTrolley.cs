@@ -363,6 +363,8 @@ public class MoveTrolley : MonoBehaviour
         {
             Debug.Log("different timeScale...");
         }
+        Restock restock = GameObject.Find("Cube").GetComponent<Restock>();
+        restock.customerCheckout();
     }
 
     //write a function to send checkout message 

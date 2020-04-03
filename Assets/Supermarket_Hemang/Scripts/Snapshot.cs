@@ -6,16 +6,13 @@ public class Snapshot : MonoBehaviour
 {
     // Start is called before the first frame update
     public float distance;
-    public GameObject center;
-    public Snapshot(float distance, GameObject center)
+    public Vector3 center;
+    public bool visited = false;
+    public Snapshot(float distance, Vector3 center)
     {
         this.distance = distance;
         this.center = center;
+        this.visited = false;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
