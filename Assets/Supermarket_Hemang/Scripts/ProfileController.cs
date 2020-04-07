@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -40,7 +41,9 @@ public class ProfileController : MonoBehaviour
         profiles.Add("Meat");
         profiles.Add("Dairy");
         profiles.Add("Party");
-        using(var reader = new StreamReader(@"profiles.csv"))
+        string desktopDir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        string filePath = Path.Combine(desktopDir, "profiles.csv");
+        using (var reader = new StreamReader(filePath))
         {
             while(!reader.EndOfStream)
             {

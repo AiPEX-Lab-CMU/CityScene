@@ -168,6 +168,47 @@ public class Restock : MonoBehaviour
         isMoving = false;
     }
 
+    // This function sends the current position, orientation, zoom and pixel data
+    // of the robot to python.
+    // Output format - (position),(orientation),zoom
+    // zoom here is considered to be equivalent to field of view parameter of Unity camera
+    private void sendCurrentState()
+    {
+        Transform t = gameObject.transform;
+        string position = "(" + t.position.x + "," + t.position.y + "," + t.position.z + ")";
+        string orientation = "(" + t.rotation.x + "," + t.rotation.y + "," + t.rotation.z + ")";
+        string zoom = cam.fieldOfView.ToString();
+        //messageSender.sendBytes("001", position + "|" + orientation + "|" + zoom);
+        Debug.Log("Current state : " + position + "|" + orientation + "|" + zoom);
+        // send snapshot to python
+
+    }
+
+
+    //Parse the reply from python and change values accordingly
+    // format of communication from python - (position)|(orientation)|zoom|nextMove|restock|item
+    private void actBasedOnReply(string reply)
+    {
+        string[] str = reply.Split('|');
+        string[] pos = str[0].Split(',');
+        Transform t = gameObject.transform;
+        Vector3 position = new Vector3(float.Parse(pos[0].Substring(1)), float.Parse(pos[1]),float.Parse(pos[2].Split(')')[0]));
+        string[] rot = str[1].Split(',');
+        Quaternion rotation = new Quaternion(float.Parse(rot[0].Substring(1)), float.Parse(rot[1]), float.Parse(rot[2].Split(')')[0]), t.rotation.w);
+        t.SetPositionAndRotation(position, rotation);
+        float zoom = float.Parse(str[2]);
+        cam.fieldOfView = zoom;
+        //insert code for movement here based on str[3]
+        if(str[4].Equals("1"))
+        {
+            MarketItems market = GameObject.Find("Green_Market").GetComponent<MarketItems>();
+            //call restock funciton. add itemname to the variable below and call restock funciton
+            string item = str[5];
+            market.restock(item);
+        }
+    }
+
+
     //Update is called once per frame
     void Update()
     {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -27,15 +28,25 @@ public class MarketItems : MonoBehaviour
 
     // maps all the items in the market to its nearest markers
     public Dictionary<string, List<string>> markerItems = new Dictionary<string, List<string>>();
+
+    // maps that hold inventory counts
+    public Dictionary<string, int> initialInventory = new Dictionary<string, int>();
+    public Dictionary<string, int> currentInventory = new Dictionary<string, int>();
+
+    // map that holds sample inventory game objects for each item.
+    public Dictionary<string, GameObject> inventoryStore = new Dictionary<string, GameObject>();
     // Start is called before the first frame update
     // adding necessary physics to the objects, and populating the above variables
     void Start()
     {
-        if (File.Exists(@"shelfData.txt"))
+        string desktopDir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        string filePath = Path.Combine(desktopDir, "shelfData.txt");
+        if (File.Exists(filePath))
             changeLocation();
         else
             writeDetails();
         GameObject child = GameObject.Find("shelves");
+        GameObject invParent = GameObject.Find("Inventory");
         Transform[] markerList = GameObject.Find("MovementMarkers").GetComponentsInChildren<Transform>();
         foreach (Transform tf in child.GetComponentsInChildren<Transform>())
         {
@@ -61,12 +72,19 @@ public class MarketItems : MonoBehaviour
                 if (map.ContainsKey(product))
                 {
                     map[product].Add(tf.gameObject);
+                    initialInventory[product]++;
+                    currentInventory[product]++;
                 }
                 else
                 {
                     List<GameObject> temp = new List<GameObject>();
-                    temp.Add(tf.gameObject);
+                    //temp.Add(tf.gameObject);
                     map.Add(product, temp);
+                    inventoryStore.Add(product, tf.gameObject);
+                    tf.SetParent(invParent.transform);
+                    initialInventory.Add(product, 1);
+                    currentInventory.Add(product, 1);
+           
                 }
                 foreach (Transform t in markerList)
                 {
@@ -83,6 +101,11 @@ public class MarketItems : MonoBehaviour
                 }
             }
         }
+        //foreach(KeyValuePair<string,int> k in initialInventory)
+        //{
+        //    Debug.Log("Initial inventory : " + k.Key + " : " + k.Value);
+        //    Debug.Log("Current inventory : " + k.Key + " : " + currentInventory[k.Key]);
+        //} 
         loadMarkerMap();
         reloadMarkerMap();
         getDetails();
@@ -106,7 +129,9 @@ public class MarketItems : MonoBehaviour
                 locations[thisItem].Add(tf);
             }
         }
-        using (var reader = new StreamReader(@"shelfData.txt"))
+        string desktopDir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        string filePath = Path.Combine(desktopDir, "shelfData.txt");
+        using (var reader = new StreamReader(filePath))
         {
             while(!reader.EndOfStream)
             {
@@ -191,6 +216,43 @@ public class MarketItems : MonoBehaviour
         return markerMap;
     }
 
+    // function to restock item. Search for positions in shelfData.txt based on the item
+    // and create replicas and attach them to the parent object based on shelfData.txt
+    public void restock(String item)
+    {
+        int restockCount = initialInventory[item] - currentInventory[item];
+        List<Vector3> positions = new List<Vector3>();
+        if (inventoryStore.ContainsKey(item))
+        {
+            GameObject restockingObject = inventoryStore[item];
+            string desktopDir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string filePath = Path.Combine(desktopDir, "shelfData.txt");
+            int i = 0;
+            using (var reader = new StreamReader(filePath))
+            {
+                while(i<restockCount && !reader.EndOfStream)
+                {
+                    string line = reader.ReadLine();
+                    string[] cols = line.Split(';');
+                    Debug.Log(line);
+                    if(cols[cols.Length-1].ToLower().Contains(item))
+                    {
+                        Debug.Log("true");
+                        string parentName = cols[cols.Length - 2].Split(':')[0];
+                        GameObject parent = GameObject.Find(parentName);
+                        string[] pos = cols[cols.Length - 1].Split(':')[1].Split(',');
+                        Vector3 position = new Vector3(float.Parse(pos[0]), float.Parse(pos[1]), float.Parse(pos[2]));
+                        GameObject newItem = Instantiate(restockingObject, parent.transform);
+                        newItem.transform.position = position;
+                        i++;
+                    }
+                }
+            }
+            currentInventory[item] += i;
+            Debug.Log("Restocked : " + item + ". Added " + i + " items");
+        }
+    }
+
     // updates the markerMap for items whose positions have been changed (changedItems)
     public void updateMarkerMap()
     {
@@ -233,7 +295,9 @@ public class MarketItems : MonoBehaviour
                 data.Add(getChildDetails(t));
             }
         }
-        using (StreamWriter fin = new StreamWriter(@"shelfData.txt"))
+        string desktopDir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        string filePath = Path.Combine(desktopDir, "shelfData.txt");
+        using (StreamWriter fin = new StreamWriter(filePath))
         {
             foreach(string d in data)
             {
@@ -245,7 +309,9 @@ public class MarketItems : MonoBehaviour
     //Load the shelfMap based on positions in shelfData.txt
     void generateShelfMap()
     {
-        using (var reader = new StreamReader(@"shelfData.txt"))
+        string desktopDir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        string filePath = Path.Combine(desktopDir, "shelfData.txt");
+        using (var reader = new StreamReader(filePath))
         {
             while(!reader.EndOfStream)
             {
@@ -449,7 +515,9 @@ public class MarketItems : MonoBehaviour
     // structure which represents the supermarket.
     void getDetails()
     {
-        using (var reader = new StreamReader(@"shelfData.txt"))
+        string desktopDir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        string filePath = Path.Combine(desktopDir, "shelfData.txt");
+        using (var reader = new StreamReader(filePath))
         {
             shelves = new Dictionary<string, Shelf>();
             while(!reader.EndOfStream)
