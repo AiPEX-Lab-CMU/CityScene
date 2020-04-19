@@ -41,33 +41,38 @@ public class SendMessage : MonoBehaviour
 		mut.ReleaseMutex();
 	}
 
-	public void sendBytes(string type, string argument)
-	{
-		mut.WaitOne();
-		System.Text.Encoding encoding = System.Text.Encoding.UTF8; //or some other, but prefer some UTF is Unicode is used
-		if (type == "001" || type == "003")
-			client.SendFrame(type + argument);
-		else
-		{
-			byte[] string_bytes = encoding.GetBytes(type);
-			byte[] bytes = File.ReadAllBytes(argument);
-			byte[] final = new byte[string_bytes.Length + bytes.Length];
-			System.Buffer.BlockCopy(string_bytes, 0, final, 0, string_bytes.Length);
-			System.Buffer.BlockCopy(bytes, 0, final, string_bytes.Length, bytes.Length);
-			client.SendFrame(final);
-		}
-		string message;
-		bool gotMessage;
-		while (true)
-		{
-			gotMessage = client.TryReceiveFrameString(out message);
-			if (gotMessage) break;
-		}
-		mut.ReleaseMutex();
-		if (gotMessage) Debug.Log("Received Message: " + message);
+    public string sendBytes(string type, string argument)
+    {
+        mut.WaitOne();
+        System.Text.Encoding encoding = System.Text.Encoding.UTF8; //or some other, but prefer some UTF is Unicode is used
+        if (type == "001")
+            client.SendFrame(type + argument);
+        else
+        {
+            byte[] string_bytes = encoding.GetBytes(type);
+            byte[] bytes = File.ReadAllBytes(argument);
+            byte[] final = new byte[string_bytes.Length + bytes.Length];
+            System.Buffer.BlockCopy(string_bytes, 0, final, 0, string_bytes.Length);
+            System.Buffer.BlockCopy(bytes, 0, final, string_bytes.Length, bytes.Length);
+            client.SendFrame(final);
+        }
+        string message;
+        bool gotMessage;
+        while (true)
+        {
+            gotMessage = client.TryReceiveFrameString(out message);
+            if (gotMessage) break;
+        }
+        mut.ReleaseMutex();
+        if (gotMessage)
+        {
+            Debug.Log("Received Message: " + message);
+            return message;
+        }
+        return null;
 	}
 
-    public void sendBytesInMemory(string type, byte[] bytes)
+    public string sendBytesInMemory(string type, byte[] bytes)
     {
         mut.WaitOne();
         System.Text.Encoding encoding = System.Text.Encoding.UTF8; //or some other, but prefer some UTF is Unicode is used
@@ -85,5 +90,30 @@ public class SendMessage : MonoBehaviour
         }
         mut.ReleaseMutex();
         if (gotMessage) Debug.Log("Received Message: " + message);
+        return message;
+    }
+
+    public string sendBytesHybrid(string type, string first, byte[] second)
+    {
+        mut.WaitOne();
+        type += first.Length.ToString();
+        System.Text.Encoding encoding = System.Text.Encoding.UTF8; //or some other, but prefer some UTF is Unicode is used
+        byte[] string_bytes = encoding.GetBytes(type);
+        byte[] first_bytes = encoding.GetBytes(first);
+        byte[] final = new byte[string_bytes.Length + first_bytes.Length + second.Length];
+        System.Buffer.BlockCopy(string_bytes, 0, final, 0, string_bytes.Length);
+        System.Buffer.BlockCopy(first_bytes, 0, final, string_bytes.Length, first_bytes.Length);
+        System.Buffer.BlockCopy(second, 0, final, string_bytes.Length + first_bytes.Length, second.Length);
+        client.SendFrame(final);
+        string message;
+        bool gotMessage;
+        while (true)
+        {
+            gotMessage = client.TryReceiveFrameString(out message);
+            if (gotMessage) break;
+        }
+        mut.ReleaseMutex();
+        if (gotMessage) Debug.Log("Received Message: " + message);
+        return message;
     }
 }

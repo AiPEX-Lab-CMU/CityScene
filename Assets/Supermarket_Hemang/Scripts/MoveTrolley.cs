@@ -185,6 +185,7 @@ public class MoveTrolley : MonoBehaviour
                     //totalItems++;
                     message = message + "\t" + randomItem;
                     Debug.Log("Added item " + mi.markerItems[nextMk][ind] + " to the list of " + transform.name);
+                    mi.currentInventory[mi.markerItems[nextMk][ind]]--;
                 }
                 //foreach (KeyValuePair<string, string> entry in markerMap)
                 //{
@@ -244,12 +245,14 @@ public class MoveTrolley : MonoBehaviour
 
     void moveItemToCart()
     {
+        MarketItems mi = GameObject.Find("Green_Market").GetComponent<MarketItems>();
         Actions actions = transform.Find("MoveItem").GetComponent<Actions>();
         ActionTransformMove itemMoveAction = actions.actionsList.actions[0].GetComponent<ActionTransformMove>();
         targetObj = findItemObject(nextItem);
         itemsPicked++;
         if (targetObj != null)
         {
+            mi.currentInventory[nextItem]--;
             message = message + "\t" + nextItem;
             itemMoveAction.target.gameObject = targetObj;
             ActionRigidbody actionRigidbody = actions.actionsList.actions[1].GetComponent<ActionRigidbody>();
@@ -363,7 +366,7 @@ public class MoveTrolley : MonoBehaviour
         {
             Debug.Log("different timeScale...");
         }
-        Restock restock = GameObject.Find("Cube").GetComponent<Restock>();
+        Restock restock = GameObject.Find("Container").GetComponent<Restock>();
         restock.customerCheckout();
     }
 
