@@ -99,7 +99,7 @@ public class MoveTrolley : MonoBehaviour
         int randomVar = rand.Next(100);
         Debug.Log(randomVar);
         if (randomVar > 80)
-        { 
+        {
             StartCoroutine(getFedUp());
             Debug.Log("This customer is in a hurry.");
         }
@@ -166,7 +166,7 @@ public class MoveTrolley : MonoBehaviour
         while (!isComplete)
         {
             yield return new WaitForSeconds(waitTime);
-            if (!isComplete && markerCount<38 && isMoving)
+            if (!isComplete && markerCount < 38 && isMoving)
             {
                 // get player's next marker
                 String nextMk = "Marker" + (markerCount + 1);
@@ -185,6 +185,7 @@ public class MoveTrolley : MonoBehaviour
                     //totalItems++;
                     message = message + "\t" + randomItem;
                     Debug.Log("Added item " + mi.markerItems[nextMk][ind] + " to the list of " + transform.name);
+                    mi.currentInventory[mi.markerItems[nextMk][ind]]--;
                 }
                 //foreach (KeyValuePair<string, string> entry in markerMap)
                 //{
@@ -204,13 +205,13 @@ public class MoveTrolley : MonoBehaviour
 
     public void checkShoppingComplete()
     {
-        if(itemsPicked>=totalItems)
+        if (itemsPicked >= totalItems)
         {
             isComplete = true;
             Debug.Log("Shopping Complete");
             checkout();
         }
-        
+
     }
 
     IEnumerator getFedUp()
@@ -244,12 +245,14 @@ public class MoveTrolley : MonoBehaviour
 
     void moveItemToCart()
     {
+        MarketItems mi = GameObject.Find("Green_Market").GetComponent<MarketItems>();
         Actions actions = transform.Find("MoveItem").GetComponent<Actions>();
         ActionTransformMove itemMoveAction = actions.actionsList.actions[0].GetComponent<ActionTransformMove>();
         targetObj = findItemObject(nextItem);
         itemsPicked++;
         if (targetObj != null)
         {
+            mi.currentInventory[nextItem]--;
             message = message + "\t" + nextItem;
             itemMoveAction.target.gameObject = targetObj;
             ActionRigidbody actionRigidbody = actions.actionsList.actions[1].GetComponent<ActionRigidbody>();
@@ -264,7 +267,7 @@ public class MoveTrolley : MonoBehaviour
             isPicking = false;
             checkShoppingComplete();
         }
-        
+
     }
 
 
@@ -280,9 +283,9 @@ public class MoveTrolley : MonoBehaviour
     public void getNearbyItems()
     {
 
-        foreach(string item in sl.items)
+        foreach (string item in sl.items)
         {
-            if(markerItems.ContainsKey(markerMap[item]))
+            if (markerItems.ContainsKey(markerMap[item]))
             {
                 markerItems[markerMap[item]].Add(item);
             }
@@ -301,7 +304,7 @@ public class MoveTrolley : MonoBehaviour
         foreach (Transform tf in child.GetComponentsInChildren<Transform>())
         {
             string thisItem = tf.gameObject.name;
-            if(thisItem.ToLower().Contains(item.ToLower()) && thisItem.ToLower().Contains("product") && !thisItem.ToLower().Contains("LOD"))
+            if (thisItem.ToLower().Contains(item.ToLower()) && thisItem.ToLower().Contains("product") && !thisItem.ToLower().Contains("LOD"))
             {
                 return tf.gameObject;
             }
@@ -316,22 +319,22 @@ public class MoveTrolley : MonoBehaviour
         double minDist = double.PositiveInfinity;
         int checkoutIndex = 0;
         GameObject chkout = GameObject.Find("Checkout");
-        for(int i=0; i<=2; i=i+2)
+        for (int i = 0; i <= 2; i = i + 2)
         {
             double x = System.Math.Pow((chkout.transform.GetChild(i).transform.position.x - transform.position.x), 2);
             double z = System.Math.Pow((chkout.transform.GetChild(i).transform.position.z - transform.position.z), 2);
             double dist = System.Math.Sqrt((x + z));
-            if(dist<minDist)
+            if (dist < minDist)
             {
                 minDist = dist;
-                checkoutIndex = i/2;
+                checkoutIndex = i / 2;
             }
         }
         salesManID = checkoutIndex;
         Actions actions = transform.Find("MoveToCheckout").GetComponent<Actions>();
         ActionCharacterMoveTo[] moveTrolley = actions.actionsList.actions[0].GetComponents<ActionCharacterMoveTo>();
         moveTrolley[0].marker = chkout.transform.Find("CheckoutMarker" + checkoutIndex).GetComponent<NavigationMarker>();
-        moveTrolley[1].marker = chkout.transform.Find("CheckoutMarker"+ checkoutIndex +"Counter").GetComponent<NavigationMarker>();
+        moveTrolley[1].marker = chkout.transform.Find("CheckoutMarker" + checkoutIndex + "Counter").GetComponent<NavigationMarker>();
         moveTrolley[2].marker = chkout.transform.Find("Exit0").GetComponent<NavigationMarker>();
         moveTrolley[3].marker = chkout.transform.Find("Exit1").GetComponent<NavigationMarker>();
         actions.Execute();

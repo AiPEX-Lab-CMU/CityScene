@@ -50,10 +50,11 @@ public class customerHandler : MonoBehaviour
         Button startButton = GameObject.Find("StartButton").GetComponent<Button>();
         Button changeButton = GameObject.Find("ChangeButton").GetComponent<Button>();
         Button backButton = GameObject.Find("BackButton").GetComponent<Button>();
+        Button resetButton = GameObject.Find("ResetButton").GetComponent<Button>();
         backButton.interactable = false;
         startButton.interactable = false;
         changeButton.interactable = false;
-        
+        resetButton.interactable = false;
         StartCoroutine(startController());
     }
 
@@ -109,6 +110,15 @@ public class customerHandler : MonoBehaviour
                 yield return new WaitForSeconds(wait);
             }
         }
+        Start();
+        Button startButton = GameObject.Find("StartButton").GetComponent<Button>();
+        Button changeButton = GameObject.Find("ChangeButton").GetComponent<Button>();
+        Button backButton = GameObject.Find("BackButton").GetComponent<Button>();
+        Button resetButton = GameObject.Find("ResetButton").GetComponent<Button>();
+        backButton.interactable = true;
+        startButton.interactable = true;
+        changeButton.interactable = true;
+        resetButton.interactable = true;
     }
 
 
