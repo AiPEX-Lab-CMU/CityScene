@@ -109,6 +109,10 @@ public class MarketItems : MonoBehaviour
         loadMarkerMap();
         reloadMarkerMap();
         getDetails();
+        //foreach (String s in inventoryStore.Keys)
+        //    Debug.Log("iTEM " + s);
+        //currentInventory["potatoes"] -= 6;
+        //currentInventory["yogurt"] -= 5;
     }
 
     /* Change location of products only, suppose that crates and shelves are never moved */
@@ -244,12 +248,24 @@ public class MarketItems : MonoBehaviour
                         Vector3 position = new Vector3(float.Parse(pos[0]), float.Parse(pos[1]), float.Parse(pos[2]));
                         GameObject newItem = Instantiate(restockingObject, parent.transform);
                         newItem.transform.position = position;
+                        newItem.transform.rotation = restockingObject.transform.rotation;
                         i++;
                     }
                 }
             }
             currentInventory[item] += i;
             Debug.Log("Restocked : " + item + ". Added " + i + " items");
+        }
+    }
+
+    // Function called when simulation is started to restock all shelves and set the supermarket
+    // to an initial state.
+    public void restockAll()
+    {
+        foreach(String item in inventoryStore.Keys)
+        {
+            Debug.Log("Restocking : " + item);
+            restock(item);
         }
     }
 

@@ -121,6 +121,12 @@ public class Restock : MonoBehaviour
         StartCoroutine(communicateWithPython());
     }
 
+    public void resetCam()
+    {
+        cam.transform.rotation = new Quaternion(10.0f, 150.0f, 0.0f, 0.0f);
+        cam.fieldOfView = 60.0f;
+    }
+
     // This function sends the current position, orientation, zoom and pixel data
     // of the robot to python.
     // Output format - (position),rotation,zoom
