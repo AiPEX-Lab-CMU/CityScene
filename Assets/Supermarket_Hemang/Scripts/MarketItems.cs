@@ -133,6 +133,8 @@ public class MarketItems : MonoBehaviour
                 locations[thisItem].Add(tf);
             }
         }
+        List<string> keyList = new List<string>(locations.Keys);
+        Debug.Log(keyList);
         string desktopDir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         string filePath = Path.Combine(desktopDir, "shelfData.txt");
         using (var reader = new StreamReader(filePath))
@@ -163,6 +165,7 @@ public class MarketItems : MonoBehaviour
                     string[] crateCoordicates = parsedCrates[1].Split(',');
                     string[] productCoordinates = parsedProducts[1].Split(',');
                     Transform crate = GameObject.Find(parsedCrates[0]).transform;
+                    Debug.Log("parsedProducts is " + parsedProducts[0]);
                     Transform product = locations[parsedProducts[0]][0];
                     product.SetParent(crate);
                     float x = float.Parse(productCoordinates[0], System.Globalization.CultureInfo.InvariantCulture);

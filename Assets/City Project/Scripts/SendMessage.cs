@@ -66,7 +66,6 @@ public class SendMessage : MonoBehaviour
         mut.ReleaseMutex();
         if (gotMessage)
         {
-            Debug.Log("Received Message: " + message);
             return message;
         }
         return null;
@@ -89,7 +88,6 @@ public class SendMessage : MonoBehaviour
             if (gotMessage) break;
         }
         mut.ReleaseMutex();
-        if (gotMessage) Debug.Log("Received Message: " + message);
         return message;
     }
 
@@ -113,7 +111,6 @@ public class SendMessage : MonoBehaviour
             if (gotMessage) break;
         }
         mut.ReleaseMutex();
-        if (gotMessage) Debug.Log("Received Message: " + message);
         return message;
     }
 }

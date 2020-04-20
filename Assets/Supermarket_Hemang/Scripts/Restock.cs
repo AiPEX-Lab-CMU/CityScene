@@ -11,33 +11,41 @@ using GameCreator.Variables;
 
 public class Restock : MonoBehaviour
 {
-    private int nextMarkerVal = 0;
+    private int nextMarkerVal = 1;
     private Camera cam;
-    public float moveSpeed = 0.25f;
-    public float waitSeconds = 0.25f;
-    public Vector3 moveDirection = new Vector3(0f, 0f, 0f);
+    public float moveSpeed = 1.0f;
     SendMessage messageSender;
     bool isMoving = false;
     bool pictured = false;
     int count = 0;
     int checkedOutCustomers = 0;
+    float timeLimit = 4000.0f;
     List<string> itemsNeeded = new List<string>();
+    public Dictionary<string, HashSet<string>> shelfRestockMap = new Dictionary<string, HashSet<string>>();
+    public bool doingCoroutine = false;
+    int numCoroutines = 0;
+
+
 
     public IEnumerator communicateWithPython()
     {
+        doingCoroutine = true;
         string reply = "";
-        yield return new WaitForSeconds(1.0f);
-        while (!isMoving) ;
-        Debug.Log("Start working");
-        while(reply != "Stop Moving")
+        float timePassed = 0.0f;
+        var stopWatch = new System.Diagnostics.Stopwatch();
+        while (timePassed < timeLimit)
         {
-            isMoving = false;
+            stopWatch.Restart();
             reply = sendCurrentState();
             actBasedOnReply(reply);
-            isMoving = true;
-            yield return new WaitForSeconds(waitSeconds);
+            yield return new WaitForSeconds(0.5f);
+            stopWatch.Stop();
+            timePassed += stopWatch.ElapsedMilliseconds;
         }
+        doingCoroutine = false;
+        numCoroutines++;
     }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -60,65 +68,74 @@ public class Restock : MonoBehaviour
         itemsNeeded.Add("cola");
         itemsNeeded.Add("beer");
         itemsNeeded.Add("wvine");
-        Debug.Log("Initial rotation around y axis is " + gameObject.transform.localEulerAngles.y);
-    }
-
-    void moveToNextMarker()
-    {
-        isMoving = true;
-        Actions actions = gameObject.transform.GetComponent<Actions>();
-        ActionCharacterMoveTo charMove = actions.actionsList.actions[0].GetComponent<ActionCharacterMoveTo>();
-        nextMarkerVal++;
-        if (nextMarkerVal > 39)
-            return;
-        charMove.marker = GameObject.Find("Marker" + nextMarkerVal).GetComponent<NavigationMarker>();
-        actions.Execute();
     }
 
     public void customerCheckout()
     {
         checkedOutCustomers++;
-        if(checkedOutCustomers == 50)
+        if(checkedOutCustomers != 0 && checkedOutCustomers % 50 == 0)
             readyToMove();
     }
 
-    public void setIsMoving(bool moving)
+    public void resetPosition()
     {
-        Debug.Log("Called is moving");
-        isMoving = moving;
+        Debug.Log("Memory used before collection:       "+
+                          GC.GetTotalMemory(false));
+        GC.Collect();
+        Debug.Log("Memory used after full collection:   "+
+                          GC.GetTotalMemory(true));
+        gameObject.transform.position = new Vector3(-70f, 0.59f, 1.07f);
+        isMoving = false;
+        nextMarkerVal = 1;
+        numCoroutines = 0;
     }
 
-    /* Zooms in or out at a random coefficient and focuses on the object and takes a snapshot */
-    private void takeSnapshot(Vector3 product)
+
+    public void setIsMoving(bool moving)
     {
-        /* Focus on the product */
-        cam.transform.LookAt(product);
-        cam.enabled = true;
-        float zoomDistance = 0f;
-        cam.fieldOfView += zoomDistance;
-        int resWidth = 1280;
-        int resHeight = 720;
-        RenderTexture rt = new RenderTexture(resWidth, resHeight, 24);
-        cam.targetTexture = rt;
-        Texture2D screen = new Texture2D(resWidth, resHeight, TextureFormat.RGB24, false);
-        cam.Render();
-        RenderTexture.active = rt;
-        screen.ReadPixels(new Rect(0, 0, resWidth, resHeight), 0, 0);
-        cam.targetTexture = null;
-        RenderTexture.active = null;
-        Destroy(rt);
-        byte[] bytes = screen.EncodeToJPG();
-        messageSender.sendBytesInMemory("000", bytes);
-        cam.fieldOfView -= zoomDistance;
-        count++;
-        cam.enabled = false;
+        Character character = gameObject.GetComponent<Character>();
+        character.characterLocomotion.runSpeed = 0.0f;
+        communicateWithPython();
+        character.characterLocomotion.runSpeed = moveSpeed;
+        isMoving = moving;
+        if (nextMarkerVal > 39)
+        {
+            gameObject.transform.position = new Vector3(-70f, 0.59f, 1.07f);
+            return;
+        }
     }
 
     public void readyToMove()
     {
         gameObject.transform.position = new Vector3(-32.616f, 0.265f, -7.769f);
+        GameObject shelves = GameObject.Find("shelves");
+        shelfRestockMap = new Dictionary<string, HashSet<string>>();
+        foreach (Transform shelf in shelves.GetComponentsInChildren<Transform>())
+        {
+            if (shelf.gameObject.name.ToLower().Contains("ray_store"))
+            {
+                HashSet<string> listOfItems = new HashSet<string>();
+                foreach (Transform child in shelf.gameObject.GetComponentsInChildren<Transform>())
+                {
+                    string name = child.gameObject.name;
+                    if (name.ToLower().Contains("product") && !name.Contains("LOD"))
+                    {
+                        string tmp = name.Substring(name.IndexOf('_') + 1);
+                        int index = tmp.IndexOfAny(new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ' ' });
+                        string product;
+                        if (index != -1)
+                            product = tmp.Substring(0, index);
+                        else
+                            product = tmp;
+                        if (itemsNeeded.Contains(product))
+                            listOfItems.Add(product);
+                    }
+                }
+                shelfRestockMap.Add(shelf.gameObject.name, listOfItems);
+            }
+        }
+        numCoroutines = 0;
         isMoving = true;
-        StartCoroutine(communicateWithPython());
     }
 
     public void resetCam()
@@ -129,7 +146,7 @@ public class Restock : MonoBehaviour
 
     // This function sends the current position, orientation, zoom and pixel data
     // of the robot to python.
-    // Output format - (position),rotation,zoom
+    // Output format - (position),rotation,zoom,half_empty
     // zoom here is considered to be equivalent to field of view parameter of Unity camera
     private string sendCurrentState()
     {
@@ -137,7 +154,6 @@ public class Restock : MonoBehaviour
         string position = "(" + t.position.x + "," + t.position.y + "," + t.position.z + ")";
         string orientation = t.localEulerAngles.y.ToString();
         string zoom = cam.fieldOfView.ToString();
-        Debug.Log("Current state : " + position + "|" + orientation + "|" + zoom);
         cam.enabled = true;
         int resWidth = 1280;
         int resHeight = 720;
@@ -152,67 +168,61 @@ public class Restock : MonoBehaviour
         Destroy(rt);
         byte[] bytes = screen.EncodeToJPG();
         cam.enabled = false;
+        int halfEmpty = 0;
         // send snapshot to python
-        string reply = messageSender.sendBytesHybrid("002", position + "|" + orientation + "|" + zoom + "|", bytes);
+        RaycastHit hit;
+        MarketItems market = GameObject.Find("Green_Market").GetComponent<MarketItems>();
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, 5.0f))
+        {
+            string name = hit.collider.gameObject.name;
+            if (shelfRestockMap.ContainsKey(name) && shelfRestockMap[name].Count > 0)
+            {
+                HashSet<string> itemsOnShelf = shelfRestockMap[name];
+                int total = 0;
+                int current = 0;
+                foreach(string product in itemsOnShelf)
+                {
+                    current += market.currentInventory[product];
+                    total += market.initialInventory[product];
+                }
+                if((float)current/(float)total < 0.5)
+                {
+                    halfEmpty = 1;
+                }
+            }
+        }
+        string reply = messageSender.sendBytesHybrid("002", position + "|" + orientation + "|" + zoom + "|" + halfEmpty + "|", bytes);
         return reply;
     }
 
 
     //Parse the reply from python and change values accordingly
-    // format of communication from python - move|rotation|zoom|restock
+    // format of communication from python - rotation|zoom|restock
     private void actBasedOnReply(string reply)
     {
-        if (reply == "Stop Moving")
-        {
-            isMoving = false;
-            return;
-        }
         string[] str = reply.Split('|');
-        if (str[3].Equals("1"))
+        if (str[2].Equals("1"))
         {
-            Debug.Log("need to restock");
             RaycastHit hit;
-            if(Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, 10.0f))
+            if(Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, 5.0f))
             {
-                Debug.Log("Detected " + hit.collider.gameObject.name);
+                Debug.Log("need to restock shelf " + hit.collider.gameObject.name);
                 MarketItems market = GameObject.Find("Green_Market").GetComponent<MarketItems>();
-                GameObject shelf = hit.collider.gameObject;
-                HashSet<string> itemsToStock = new HashSet<string>();
-                foreach(Transform child in shelf.GetComponentsInChildren<Transform>())
+                string shelfName = hit.collider.gameObject.name;
+                if (shelfRestockMap.ContainsKey(shelfName) && shelfRestockMap[shelfName].Count > 0)
                 {
-                    string name = child.gameObject.name;
-                    if(name.ToLower().Contains("product") && !name.Contains("LOD"))
+                    HashSet<string> itemsToStock = shelfRestockMap[shelfName];
+                    foreach (string itemToStock in itemsToStock)
                     {
-                        string tmp = name.Substring(name.IndexOf('_') + 1);
-                        int index = tmp.IndexOfAny(new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ' ' });
-                        string product;
-                        if (index != -1)
-                            product = tmp.Substring(0, index);
-                        else
-                            product = tmp;
-                        if(itemsNeeded.Contains(product))
-                            itemsToStock.Add(product);
+                        market.restock(itemToStock);
                     }
-                }
-                foreach(string itemToStock in itemsToStock)
-                {
-                    market.restock(itemToStock);
                 }
             }
         }
         Transform t = gameObject.transform;
-        float rotAngle = float.Parse(str[1]);
+        float rotAngle = float.Parse(str[0]);
         t.Rotate(new Vector3(0f, rotAngle, 0f));
-        float direction = float.Parse(str[0]);
-        if (direction == 0)
-            moveDirection = Vector3.forward;
-        else if (direction == 3)
-            moveDirection = Vector3.back;
-        else if (direction == 1)
-            moveDirection = Vector3.right;
-        else if (direction == 2)
-            moveDirection = Vector3.left;
-        float zoom = float.Parse(str[2]);
+        float zoom = float.Parse(str[1]);
         cam.fieldOfView = zoom;
     }
 
@@ -222,10 +232,30 @@ public class Restock : MonoBehaviour
     //Update is called once per frame
     void Update()
     {
-        if(isMoving)
+        if (isMoving)
         {
-            Debug.Log("move direction is " + moveDirection);
-            gameObject.transform.Translate(moveDirection * moveSpeed * Time.deltaTime);
+            if (nextMarkerVal > 39)
+                return;
+            Vector3 target = GameObject.Find("Marker" + nextMarkerVal).transform.position;
+            if (Vector3.Distance(gameObject.transform.position, target) < 1.0f)
+            {
+                if (!doingCoroutine && numCoroutines != nextMarkerVal)
+                {
+                    StartCoroutine(communicateWithPython());
+                }
+                if (!doingCoroutine && numCoroutines == nextMarkerVal)
+                {
+                    nextMarkerVal += 1;
+                }
+                if (nextMarkerVal > 39)
+                {
+                    gameObject.transform.position = new Vector3(-70f, 0.59f, 1.07f);
+                }
+            }
+            else
+            {
+                transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime);
+            }
         }
     }
 }
