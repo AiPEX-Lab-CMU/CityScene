@@ -110,14 +110,14 @@ public class customerHandler : MonoBehaviour
                 yield return new WaitForSeconds(wait);
             }
         }
-        Start();
-        Button startButton = GameObject.Find("StartButton").GetComponent<Button>();
-        Button changeButton = GameObject.Find("ChangeButton").GetComponent<Button>();
-        Button backButton = GameObject.Find("BackButton").GetComponent<Button>();
+        //Start();
+        //Button startButton = GameObject.Find("StartButton").GetComponent<Button>();
+        //Button changeButton = GameObject.Find("ChangeButton").GetComponent<Button>();
+        //Button backButton = GameObject.Find("BackButton").GetComponent<Button>();
         Button resetButton = GameObject.Find("ResetButton").GetComponent<Button>();
-        backButton.interactable = true;
-        startButton.interactable = true;
-        changeButton.interactable = true;
+        //backButton.interactable = true;
+        //startButton.interactable = true;
+        //changeButton.interactable = true;
         resetButton.interactable = true;
     }
 
